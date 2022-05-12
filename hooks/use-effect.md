@@ -10,7 +10,7 @@ Effects _do not block the UI_ because they run asynchronously.
 - Fetching data
 - Setting up a subscription
 - Manually changing the DOM
-- Registering and deregestering event listeners
+- Registering and deregistering event listeners
 - Reading from local storage
 - Logging
 
@@ -68,10 +68,10 @@ An effect is only rerun if at least one of the values specified as part of the e
 ### **What is a side-effect?**
 
 A functional React component uses props and/or state to calculate the output. If the
-funcional component makes calculations that don't target the output value, then these
+functional component makes calculations that don't target the output value, then these
 calculations are named _side-effects_.
 
-### **Recomendations for working with functions when used with effects**
+### **Recommendations for working with functions when used with effects**
 
 - Hoist functions that don't need any value of the component scope outside of your component
 - Move functions that use values of the component scope that are used only by an effect inside of that effect.
