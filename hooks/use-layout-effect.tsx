@@ -1,5 +1,8 @@
-// react@17 - Usage without useLayoutEffect causes flickering.
-// react@18 - Usage without useLayoutEffect does not cause flickering.
+/**
+ * react@17 - Usage without useLayoutEffect causes flickering.
+ * react@18 - Usage without useLayoutEffect does not cause flickering.
+ * Example from: https://www.youtube.com/watch?v=wU57kvYOxT4
+ */
 function Popup() {
   const [show, setShow] = React.useState(false)
   const popupRef = React.useRef<HTMLDivElement>(null)
@@ -26,8 +29,11 @@ function Popup() {
   )
 }
 
-// react@17 - Usage without useLayoutEffect causes flickering.
-// react@18 - Usage without useLayoutEffect causes flickering.
+/**
+ * react@17 - Usage without useLayoutEffect causes flickering.
+ * react@18 - Usage without useLayoutEffect causes flickering.
+ * Example from: https://daveceddia.com/useeffect-vs-uselayouteffect/
+ */
 function BlinkyRender() {
   const [value, setValue] = React.useState(0)
 
@@ -45,8 +51,11 @@ function BlinkyRender() {
   )
 }
 
-// react@17 - Usage without useLayoutEffect causes flickering.
-// react@18 - Usage without useLayoutEffect does not cause flickering.
+/**
+ * react@17 - Usage without useLayoutEffect causes flickering.
+ * react@18 - Usage without useLayoutEffect does not cause flickering.
+ * Example from: https://www.youtube.com/watch?v=pHxQtHwcT-s
+ */
 function JumpingNumber() {
   const [number, setNumber] = React.useState(0)
   const sectionRef = React.useRef<HTMLDivElement>(null)

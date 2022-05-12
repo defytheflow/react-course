@@ -1,22 +1,22 @@
 function ChatSingleComponent() {
-  const [messages, setMessages] = React.useState<string[]>([]);
-  const inputRef = React.useRef<HTMLInputElement>(null);
+  const [messages, setMessages] = React.useState<string[]>([])
+  const inputRef = React.useRef<HTMLInputElement>(null)
 
   function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+    e.preventDefault()
     if (inputRef.current) {
-      const newMessage = inputRef.current.value;
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-      inputRef.current.value = "";
-      inputRef.current.focus();
+      const newMessage = inputRef.current.value
+      setMessages(prevMessages => [...prevMessages, newMessage])
+      inputRef.current.value = ''
+      inputRef.current.focus()
     }
   }
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <input ref={inputRef} type="text" />
-        <button type="submit">Send message</button>
+        <input ref={inputRef} type='text' />
+        <button type='submit'>Send message</button>
       </form>
       <ul>
         {messages.map((message, i) => (
@@ -24,14 +24,14 @@ function ChatSingleComponent() {
         ))}
       </ul>
     </div>
-  );
+  )
 }
 
 function ChatMultipleComponents() {
-  const [messages, setMessages] = React.useState<string[]>([]);
+  const [messages, setMessages] = React.useState<string[]>([])
 
   function sendMessage(newMessage: string) {
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
+    setMessages(prevMessages => [...prevMessages, newMessage])
   }
 
   return (
@@ -39,31 +39,27 @@ function ChatMultipleComponents() {
       <MessageForm sendMessage={sendMessage} />
       <MessageList messages={messages} />
     </>
-  );
+  )
 }
 
-function MessageForm({
-  sendMessage,
-}: {
-  sendMessage: (newMessage: string) => void;
-}) {
-  const inputRef = React.useRef<HTMLInputElement>(null);
+function MessageForm({ sendMessage }: { sendMessage: (newMessage: string) => void }) {
+  const inputRef = React.useRef<HTMLInputElement>(null)
 
   function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+    e.preventDefault()
     if (inputRef.current) {
-      sendMessage(inputRef.current.value);
-      inputRef.current.value = "";
-      inputRef.current.focus();
+      sendMessage(inputRef.current.value)
+      inputRef.current.value = ''
+      inputRef.current.focus()
     }
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      <input ref={inputRef} type="text" />
-      <button type="submit">Send message</button>
+      <input ref={inputRef} type='text' />
+      <button type='submit'>Send message</button>
     </form>
-  );
+  )
 }
 
 function MessageList({ messages }: { messages: string[] }) {
@@ -73,5 +69,5 @@ function MessageList({ messages }: { messages: string[] }) {
         <li key={i}>{message}</li>
       ))}
     </ul>
-  );
+  )
 }

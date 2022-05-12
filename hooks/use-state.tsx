@@ -1,5 +1,6 @@
 /**
  * 1. Demonstrate usage of functional way to update the state. Fix stale closure bug.
+ * Example from: https://dmitripavlutin.com/react-hooks-stale-closures/
  */
 function DelayedCount() {
   const [count, setCount] = React.useState(0)

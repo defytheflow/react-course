@@ -24,4 +24,3 @@ https://daveceddia.com/useeffect-vs-uselayouteffect/
 ### **References**
 
 - [Dave Ceddia Blog](https://daveceddia.com/useeffect-vs-uselayouteffect/)
-- [Web Dev Simplified Youtube](https://www.youtube.com/watch?v=wU57kvYOxT4)
