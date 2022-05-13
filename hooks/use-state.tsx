@@ -14,7 +14,7 @@ function DelayedCount() {
 
   return (
     <div>
-      {count}
+      Count: {count}
       <button onClick={handleClickAsync}>Increase async</button>
     </div>
   )

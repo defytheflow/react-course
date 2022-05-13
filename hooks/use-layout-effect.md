@@ -19,8 +19,6 @@ If your effect is mutating the DOM, then the user will see a flicker of content.
 If your component is flickering when state is updated - as in, it renders in a
 partially-ready state first and then immediately re-renders in its final state - that's a good clue that it's time to swap in `useLayoutEffect`.
 
-https://daveceddia.com/useeffect-vs-uselayouteffect/
-
-### **References**
+## References
 
 - [Dave Ceddia Blog](https://daveceddia.com/useeffect-vs-uselayouteffect/)
