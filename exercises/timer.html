@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Timer</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      class Timer extends React.Component {
+        constructor(props) {
+          super(props)
+          this.state = {
+            timeLeft: 0,
+            activeTimer: null,
+            paused: null,
+          }
+        }
+
+        start(timeLeft) {
+          clearInterval(this.interval)
+          this.startInterval()
+          this.setState({ timeLeft, activeTimer: timeLeft, paused: false })
+        }
+
+        pause() {
+          clearInterval(this.interval)
+          this.setState({ paused: true })
+        }
+
+        resume() {
+          this.startInterval()
+          this.setState({ paused: false })
+        }
+
+        cancel() {
+          clearInterval(this.interval)
+          this.setState({ timeLeft: 0, activeTimer: null, paused: null })
+        }
+
+        reset() {
+          clearInterval(this.interval)
+          this.setState({ timeLeft: this.state.activeTimer })
+          this.startInterval()
+        }
+
+        startInterval() {
+          this.interval = setInterval(() => {
+            if (this.state.timeLeft === 0) {
+              clearInterval(this.interval)
+              this.setState({ paused: null })
+            } else {
+              this.setState(state => ({ timeLeft: state.timeLeft - 1 }))
+            }
+          }, 1000)
+        }
+
+        componentWillUnmount() {
+          clearInterval(this.interval)
+        }
+
+        formatTimer(seconds) {
+          const mins = Math.floor(seconds / 60)
+          const secs = seconds - mins * 60
+
+          let format = []
+          if (mins) format.push(mins + ' min')
+          if (secs) format.push(secs + ' sec')
+
+          return format.join(', ')
+        }
+
+        formatTimeLeft() {
+          const mins = Math.floor(this.state.timeLeft / 60)
+          const secs = this.state.timeLeft - mins * 60
+          return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
+        }
+
+        render() {
+          const timers = [5, 10, 15, 30, 60, 300, 600]
+          const buttons = timers.map(timer => (
+            <button
+              key={timer}
+              style={{
+                backgroundColor: this.state.activeTimer === timer ? 'limegreen' : null,
+              }}
+              onClick={() => this.start(timer)}
+            >
+              {this.formatTimer(timer)}
+            </button>
+          ))
+          const isIdle = this.state.paused === null
+
+          return (
+            <div>
+              <h2>Timer</h2>
+              {buttons}
+              <div style={{ marginTop: 10 }}>Time left: {this.formatTimeLeft()}</div>
+              <div>
+                <input
+                  type='range'
+                  min={0}
+                  value={this.state.timeLeft}
+                  max={this.state.activeTimer}
+                  readOnly
+                />
+              </div>
+              <button
+                style={{ marginTop: 10 }}
+                disabled={isIdle}
+                onClick={() => (this.state.paused ? this.resume() : this.pause())}
+              >
+                {this.state.paused ? 'Resume' : 'Pause'}
+              </button>
+              <button disabled={isIdle} onClick={() => this.cancel()}>
+                Cancel
+              </button>
+              <button disabled={isIdle} onClick={() => this.reset()}>
+                Reset
+              </button>
+            </div>
+          )
+        }
+      }
+
+      const container = document.getElementById('root')
+      const root = ReactDOM.createRoot(container)
+      root.render(<Timer />)
+    </script>
+  </body>
+</html>
