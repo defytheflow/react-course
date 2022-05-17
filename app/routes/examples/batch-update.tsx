@@ -1,4 +1,6 @@
-function BatchUpdateExample() {
+import React from 'react'
+
+export default function BatchUpdateExample() {
   return (
     <div>
       <BatchUpdateSyncEventHandler />
