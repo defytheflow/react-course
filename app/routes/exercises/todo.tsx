@@ -13,8 +13,11 @@ enum Filter {
 }
 
 // Possible other features:
-// - local storage support
+// - search by name
+// - edit name
 // - color filters
+// - local storage support
+
 export default function TodoApp() {
   const [todos, setTodos] = React.useState<Todo[]>([])
   const [filter, setFilter] = React.useState(Filter.ALL)
