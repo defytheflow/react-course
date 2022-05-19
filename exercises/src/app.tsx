@@ -1,4 +1,4 @@
-import { Routes, Route, Link } from 'react-router-dom'
+import { Link, Route, Routes } from 'react-router-dom'
 import Counter from './counter/counter'
 import Keypad from './keypad/keypad'
 import Light from './light/light'
