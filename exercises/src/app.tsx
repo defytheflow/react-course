@@ -1,5 +1,7 @@
+import React from 'react'
 import { Link, Route, Routes } from 'react-router-dom'
 import Counter from './counter/counter'
+import Greeting from './greeting/greeting'
 import Keypad from './keypad/keypad'
 import Light from './light/light'
 import Pokemon from './pokemon/pokemon'
@@ -10,6 +12,7 @@ export default function App() {
   return (
     <div className='grid place-items-center'>
       <nav className='flex gap-4 mb-10'>
+        <Link to='/greeting'>Greeting</Link>
         <Link to='/counter'>Counter</Link>
         <Link to='/timer'>Timer</Link>
         <Link to='/todo'>Todo</Link>
@@ -18,12 +21,13 @@ export default function App() {
         <Link to='/keypad'>Keypad</Link>
       </nav>
       <Routes>
-        <Route path='/todo' element={<Todo />} />
-        <Route path='/timer' element={<Timer />} />
         <Route path='/counter' element={<Counter />} />
-        <Route path='/pokemon' element={<Pokemon />} />
+        <Route path='/greeting' element={<Greeting />} />
         <Route path='/keypad' element={<Keypad />} />
         <Route path='/light' element={<Light />} />
+        <Route path='/pokemon' element={<Pokemon />} />
+        <Route path='/timer' element={<Timer />} />
+        <Route path='/todo' element={<Todo />} />
       </Routes>
     </div>
   )
