@@ -36,6 +36,7 @@ export default function Counter({
 
   return (
     <div>
+      <h2>Counter</h2>
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
         <button aria-label='Decrement value' onClick={decrement}>
           -
