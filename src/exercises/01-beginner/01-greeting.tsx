@@ -9,6 +9,7 @@ export default function Greeting() {
 
   return (
     <div>
+      <h2>Greeting</h2>
       <form>
         <label htmlFor='name'>Name:</label>
         <input id='name' value={name} onChange={handleChange} />

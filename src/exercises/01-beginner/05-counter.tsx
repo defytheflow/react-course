@@ -1,11 +1,5 @@
 import React from 'react'
 
-// FIXME:
-
-// incrementAmount and count initial values can be passed as props.
-// incrementAmount must also be reset to initialValue on dispatch({ type: 'reset' })
-// entering non numeric input into incrementAmount breaks everything, fix it
-
 export default function Counter({
   initialCount = 5,
   initialIncrementAmount = 2,
