@@ -61,7 +61,8 @@ export default function TodoApp() {
     setTodos(prevTodos => prevTodos.filter(todo => !todo.done))
   }
 
-  const numItemsLeft = todos.filter(todo => !todo.done).length
+  const numTodosRemaining = todos.filter(todo => !todo.done).length
+  const suffix = numTodosRemaining === 1 ? '' : 's'
 
   return (
     <div>
@@ -73,7 +74,7 @@ export default function TodoApp() {
       />
       <TodoAddForm todos={todos} onTodoAdd={handleTodoAdd} />
       <h3>Remaining Todos</h3>
-      {numItemsLeft} {numItemsLeft === 1 ? 'item' : 'items'} left&nbsp;&nbsp;
+      <strong>{numTodosRemaining}</strong> item{suffix} left
       <TodoActions
         todos={todos}
         onMarkAllCompleted={handleMarkAllCompleted}
@@ -99,7 +100,9 @@ function TodoList({
         <li key={todo.id} style={{ marginTop: 10 }}>
           <input type='checkbox' checked={todo.done} onChange={e => onTodoToggle(todo)} />
           <span style={{ margin: '0 5px' }}>{todo.text}</span>
-          <button onClick={() => onTodoDelete(todo)}>&times;</button>
+          <button aria-label='Remove item' onClick={() => onTodoDelete(todo)}>
+            &times;
+          </button>
         </li>
       ))}
     </ul>
@@ -160,13 +163,23 @@ function TodoActions({
 }) {
   return (
     <div style={{ marginTop: 10 }}>
-      <h3>Actions</h3>
-      <button disabled={todos.every(todo => todo.done)} onClick={onMarkAllCompleted}>
-        Mark all Completed
-      </button>
-      <button disabled={!todos.some(todo => todo.done)} onClick={onClearCompleted}>
-        Clear Completed
-      </button>
+      <h3 id='actions-heading'>Actions</h3>
+      <div role='group' aria-labelledby='actions-heading'>
+        <button
+          // disabled={todos.every(todo => todo.done)}
+          onClick={onMarkAllCompleted}
+          style={{ marginRight: 8 }}
+        >
+          Mark all Completed
+        </button>
+        <button
+          // disabled={!todos.some(todo => todo.done)}
+          onClick={onClearCompleted}
+          style={{ marginRight: 8 }}
+        >
+          Clear Completed
+        </button>
+      </div>
     </div>
   )
 }
@@ -179,29 +192,24 @@ function TodoFilter({
   onFilterChange: (newFilter: Filter) => void
 }) {
   return (
-    <div role='tablist' style={{ marginTop: 10 }}>
-      <h3>Filter by status</h3>
-      <button
-        role='tab'
-        aria-selected={filter === Filter.ALL}
-        onClick={() => onFilterChange(Filter.ALL)}
-      >
-        All
-      </button>
-      <button
-        role='tab'
-        aria-selected={filter === Filter.ACTIVE}
-        onClick={() => onFilterChange(Filter.ACTIVE)}
-      >
-        Active
-      </button>
-      <button
-        role='tab'
-        aria-selected={filter === Filter.COMPLETED}
-        onClick={() => onFilterChange(Filter.COMPLETED)}
-      >
-        Completed
-      </button>
+    <div style={{ marginTop: 10 }}>
+      <h3 id='filter-status-heading'>Filter by status</h3>
+      <div role='group' aria-labelledby='filter-status-heading'>
+        {Object.values(Filter).map(filterValue => (
+          <button
+            key={filterValue}
+            style={{
+              marginRight: 8,
+              fontWeight: filter === filterValue ? 'bold' : undefined,
+            }}
+            onClick={() => onFilterChange(filterValue)}
+          >
+            {capitalize(filterValue)}
+          </button>
+        ))}
+      </div>
     </div>
   )
 }
+
+const capitalize = (s: string) => s[0].toUpperCase() + s.slice(1)

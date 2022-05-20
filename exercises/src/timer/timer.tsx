@@ -62,12 +62,11 @@ export default function Timer() {
 
   const timers = [5, 10, 15, 30, 60, 300, 600]
   const timerButtons = timers.map(timer => {
+    const isActive = activeTimerRef.current === timer
     return (
       <button
         key={timer}
-        style={{
-          backgroundColor: activeTimerRef.current === timer ? 'limegreen' : undefined,
-        }}
+        style={{ backgroundColor: isActive ? 'limegreen' : undefined }}
         onClick={() => start(timer)}
       >
         {formatTimer(timer)}
@@ -78,14 +77,22 @@ export default function Timer() {
   const isIdle = intervalRef.current === null
 
   return (
-    <>
+    <div>
       <h2>Timer</h2>
-      {timerButtons}
+      <div style={{ display: 'flex', gap: 4 }} role='group' aria-label='Select time'>
+        {timerButtons}
+      </div>
       <div style={{ marginTop: 10 }}>Time left: {formatTimeLeft(timeLeft)}</div>
       <div>
-        <input type='range' value={timeLeft} min={0} max={activeTimerRef.current!} />
+        <input
+          type='range'
+          readOnly
+          value={timeLeft}
+          min={0}
+          max={activeTimerRef.current!}
+        />
       </div>
-      <div style={{ marginTop: 10 }}>
+      <div style={{ display: 'flex', gap: 4, marginTop: 10 }}>
         <button disabled={isIdle} onClick={isPaused ? resume : pause}>
           {isPaused ? 'Resume' : 'Pause'}
         </button>
@@ -96,7 +103,7 @@ export default function Timer() {
           Reset
         </button>
       </div>
-    </>
+    </div>
   )
 }
 

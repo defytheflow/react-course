@@ -1,57 +1,38 @@
 import React from 'react'
 
-type CounterState = {
-  count: number
-}
+// FIXME:
 
-type CounterAction =
-  | { type: 'increment' }
-  | { type: 'decrement' }
-  | { type: 'incrementByAmount'; payload: number }
-  | { type: 'incrementIfOdd' }
-  | { type: 'reset' }
+// incrementAmount and count initial values can be passed as props.
+// incrementAmount must also be reset to initialValue on dispatch({ type: 'reset' })
+// entering non numeric input into incrementAmount breaks everything, fix it
 
-function counterReducer(state: CounterState, action: CounterAction): CounterState {
-  switch (action.type) {
-    case 'increment': {
-      return { count: state.count + 1 }
-    }
-    case 'decrement': {
-      return { count: state.count - 1 }
-    }
-    case 'incrementByAmount': {
-      return { count: state.count + action.payload }
-    }
-    case 'incrementIfOdd': {
-      if (state.count % 2 === 1) {
-        return { count: state.count + 1 }
-      } else {
-        return state
-      }
-    }
-    case 'reset': {
-      return init()
-    }
-    default:
-      return state
+export default function Counter({
+  initialCount = 5,
+  initialIncrementAmount = 2,
+}: {
+  initialCount?: number
+  initialIncrementAmount?: number
+}) {
+  const [count, setCount] = React.useState(initialCount)
+  const [incrementAmount, setIncrementAmount] = React.useState(initialIncrementAmount)
+
+  const increment = () => setCount(prevCount => prevCount + 1)
+  const decrement = () => setCount(prevCount => prevCount - 1)
+
+  const incrementByAmount = () => setCount(prevCount => prevCount + incrementAmount)
+  const incrementAsync = () => setTimeout(increment, 1000)
+
+  function reset() {
+    setCount(initialCount)
+    setIncrementAmount(initialIncrementAmount)
   }
-}
 
-function init() {
-  return { count: 5 }
-}
-
-export default function Counter() {
-  const [state, dispatch] = React.useReducer(counterReducer, undefined, init)
-  const [incrementAmount, setIncrementAmount] = React.useState(2)
-
-  const increment = () => dispatch({ type: 'increment' })
-  const decrement = () => dispatch({ type: 'decrement' })
-  const incrementByAmount = () =>
-    dispatch({ type: 'incrementByAmount', payload: incrementAmount })
-  const incrementAsync = () => setTimeout(() => dispatch({ type: 'increment' }), 1000)
-  const incrementIfOdd = () => dispatch({ type: 'incrementIfOdd' })
-  const reset = () => dispatch({ type: 'reset' })
+  function handleIncrementAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const numValue = Number(e.target.value)
+    if (!Number.isNaN(numValue)) {
+      setIncrementAmount(numValue)
+    }
+  }
 
   return (
     <div>
@@ -59,7 +40,7 @@ export default function Counter() {
         <button aria-label='Decrement value' onClick={decrement}>
           -
         </button>
-        <span style={{ padding: '0 8px' }}>{state.count}</span>
+        <span style={{ padding: '0 8px' }}>{count}</span>
         <button aria-label='Increment value' onClick={increment}>
           +
         </button>
@@ -69,11 +50,11 @@ export default function Counter() {
           style={{ width: 40 }}
           aria-label='Set increment amount'
           value={incrementAmount}
-          onChange={e => setIncrementAmount(Number(e.target.value))}
+          onChange={handleIncrementAmountChange}
         />
         <button onClick={incrementByAmount}>Add Amount</button>
         <button onClick={incrementAsync}>Add Async</button>
-        <button onClick={incrementIfOdd}>Add If Odd</button>
+        <button onClick={count % 2 === 1 ? increment : undefined}>Add If Odd</button>
         <button onClick={reset}>Reset</button>
       </div>
     </div>
