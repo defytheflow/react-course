@@ -15,6 +15,8 @@ enum Filter {
 // Possible other features:
 // - search by name
 // - edit name
+// - sort by earliest / sort by latest (https://codepen.io/pen?&editors=0010&layout=left)
+// - add new to start / add new to end
 // - color filters
 // - local storage support
 

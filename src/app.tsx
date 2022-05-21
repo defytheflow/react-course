@@ -8,6 +8,7 @@ import Timer from './exercises/02-intermediate/timer'
 import Todo from './exercises/02-intermediate/todo/todo'
 import Pokemon from './exercises/02-intermediate/pokemon'
 import Math from './exercises/01-beginner/04-math'
+import BuggyCounter from './exercises/01-beginner/06-buggy-counter'
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
         <Link to='/light'>Light</Link>
         <Link to='/math'>Math</Link>
         <Link to='/counter'>Counter</Link>
+        <Link to='/buggy-counter'>Buggy Counter</Link>
         <Link to='/timer'>Timer</Link>
         <Link to='/todo'>Todo</Link>
         <Link to='/pokemon'>Pokemon</Link>
@@ -31,6 +33,7 @@ export default function App() {
         <Route path='/todo' element={<Todo />} />
         <Route path='/math' element={<Math />} />
         <Route path='/toggle' element={<Toggle />} />
+        <Route path='/buggy-counter' element={<BuggyCounter />} />
       </Routes>
     </div>
   )
