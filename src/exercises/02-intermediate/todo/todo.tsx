@@ -1,4 +1,5 @@
 import React from 'react'
+import withTitle from '../../../utils/with-title'
 
 type Todo = {
   id: number
@@ -19,8 +20,9 @@ enum Filter {
 // - add new to start / add new to end
 // - color filters
 // - local storage support
+// - this application can be rewritten with a reducer.
 
-export default function TodoApp() {
+function TodoApp() {
   const [todos, setTodos] = React.useState<Todo[]>([])
   const [filter, setFilter] = React.useState(Filter.ALL)
 
@@ -215,3 +217,5 @@ function TodoFilter({
 }
 
 const capitalize = (s: string) => s[0].toUpperCase() + s.slice(1)
+
+export default withTitle(TodoApp, 'Todo')

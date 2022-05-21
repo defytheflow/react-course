@@ -1,6 +1,7 @@
 import React from 'react'
+import withTitle from '../../utils/with-title'
 
-export default function Counter({
+function Counter({
   initialCount = 5,
   initialIncrementAmount = 2,
 }: {
@@ -9,6 +10,7 @@ export default function Counter({
 }) {
   const [count, setCount] = React.useState(initialCount)
   const [incrementAmount, setIncrementAmount] = React.useState(initialIncrementAmount)
+  const previousCount = usePrevious(count)
 
   const increment = () => setCount(prevCount => prevCount + 1)
   const decrement = () => setCount(prevCount => prevCount - 1)
@@ -23,14 +25,12 @@ export default function Counter({
 
   function handleIncrementAmountChange(e: React.ChangeEvent<HTMLInputElement>) {
     const numValue = Number(e.target.value)
-    if (!Number.isNaN(numValue)) {
-      setIncrementAmount(numValue)
-    }
+    if (!Number.isNaN(numValue)) setIncrementAmount(numValue)
   }
 
   return (
     <div>
-      <h2>Counter</h2>
+      <div>Previous: {previousCount}</div>
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
         <button aria-label='Decrement value' onClick={decrement}>
           -
@@ -55,3 +55,15 @@ export default function Counter({
     </div>
   )
 }
+
+function usePrevious<T>(value: T): T | null {
+  const valueRef = React.useRef<T | null>(null)
+
+  React.useEffect(() => {
+    valueRef.current = value
+  }, [value])
+
+  return valueRef.current
+}
+
+export default withTitle(Counter, 'Counter')

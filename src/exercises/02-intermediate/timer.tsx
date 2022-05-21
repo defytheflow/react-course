@@ -1,6 +1,7 @@
 import React from 'react'
+import withTitle from '../../utils/with-title'
 
-export default function Timer() {
+function Timer() {
   const [timeLeft, setTimeLeft] = React.useState(0)
   const [isPaused, setIsPaused] = React.useState<boolean | null>(null)
   const activeTimerRef = React.useRef<number | null>(null)
@@ -78,7 +79,6 @@ export default function Timer() {
 
   return (
     <div>
-      <h2>Timer</h2>
       <div style={{ display: 'flex', gap: 4 }} role='group' aria-label='Select time'>
         {timerButtons}
       </div>
@@ -123,3 +123,5 @@ function formatTimeLeft(timeLeft: number): string {
   const secs = timeLeft - mins * 60
   return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
 }
+
+export default withTitle(Timer, 'Timer')

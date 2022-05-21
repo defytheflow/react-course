@@ -1,20 +1,18 @@
 import React from 'react'
+import withTitle from '../../utils/with-title'
 
-export default function Greeting() {
+function Greeting() {
   const [name, setName] = React.useState('')
-
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setName(event.target.value)
-  }
 
   return (
     <div>
-      <h2>Greeting</h2>
       <form>
-        <label htmlFor='name'>Name:</label>
-        <input id='name' value={name} onChange={handleChange} />
+        <label htmlFor='name'>Name: </label>
+        <input id='name' value={name} onChange={e => setName(e.target.value)} />
       </form>
       {name ? <strong>Hello, {name}!</strong> : 'Please type your name'}
     </div>
   )
 }
+
+export default withTitle(Greeting, 'Greeting')

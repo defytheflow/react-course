@@ -1,6 +1,7 @@
 import React from 'react'
+import withTitle from '../../utils/with-title'
 
-export default function PokemonApp() {
+function PokemonApp() {
   const [pokemonName, setPokemonName] = React.useState('')
 
   function handleSubmit(newPokemonName: string) {
@@ -297,3 +298,5 @@ async function fetchPokemon(pokemonName: string) {
     throw new Error(`No pokemon with the name "${pokemonName}"`)
   }
 }
+
+export default withTitle(PokemonApp, 'Pokemon')

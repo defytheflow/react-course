@@ -1,7 +1,8 @@
 import React from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
+import withTitle from '../../utils/with-title'
 
-export default function BuggyCounterApp() {
+function BuggyCounterApp() {
   const [key, setKey] = React.useState(0)
 
   return (
@@ -49,3 +50,5 @@ function ErrorFallback({
     </div>
   )
 }
+
+export default withTitle(BuggyCounterApp, 'Buggy Counter')

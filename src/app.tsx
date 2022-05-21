@@ -7,19 +7,21 @@ import Toggle from './exercises/01-beginner/02-toggle'
 import Timer from './exercises/02-intermediate/timer'
 import Todo from './exercises/02-intermediate/todo/todo'
 import Pokemon from './exercises/02-intermediate/pokemon'
-import Math from './exercises/01-beginner/04-math'
+import Mathematics from './exercises/01-beginner/04-math'
 import BuggyCounter from './exercises/01-beginner/06-buggy-counter'
+import Search from './exercises/01-beginner/08-search'
 
 export default function App() {
   return (
     <div className='grid place-items-center'>
-      <nav className='flex gap-4 mb-10'>
+      <nav className='flex gap-4 mb-8'>
         <Link to='/greeting'>Greeting</Link>
         <Link to='/toggle'>Toggle</Link>
         <Link to='/light'>Light</Link>
         <Link to='/math'>Math</Link>
         <Link to='/counter'>Counter</Link>
         <Link to='/buggy-counter'>Buggy Counter</Link>
+        <Link to='/search'>Search</Link>
         <Link to='/timer'>Timer</Link>
         <Link to='/todo'>Todo</Link>
         <Link to='/pokemon'>Pokemon</Link>
@@ -31,9 +33,10 @@ export default function App() {
         <Route path='/pokemon' element={<Pokemon />} />
         <Route path='/timer' element={<Timer />} />
         <Route path='/todo' element={<Todo />} />
-        <Route path='/math' element={<Math />} />
+        <Route path='/math' element={<Mathematics />} />
         <Route path='/toggle' element={<Toggle />} />
         <Route path='/buggy-counter' element={<BuggyCounter />} />
+        <Route path='/search' element={<Search />} />
       </Routes>
     </div>
   )
