@@ -1,63 +1,91 @@
-1. What is Virtual DOM? +
+## Beginner
 
-2. What is JSX? +
+0. What is a Single-page Application?
 
-<!-- pre 16.8 -->
+1. What is a compiler? What is a bundler? What is a package manager?
 
-3. What life cycle methods do you know? +/-
+2. What is JSX?
 
-- shouldComponentUpdate
-- componentWillUnmount
+3. What is a React element? What is a React component?
 
-4. What is a PureComponent?
+   - When do you decide to extract a component?
 
-5. Why do we need a key prop when rendering an array of react elements? +/-
+4. What is props? What is a `children` prop?
 
-6. What are synthetic events in React?
+5. What is state?
 
-7. What is a higher-order component in React?
+   - How do you share state between sibling components?
 
-8. What is render-props in React?
+6. What is the difference between state and props?
 
-9. How do you style React components? +
+7. What are Lifecycle Methods? What methods do you know?
 
-10. What's the difference between an Element and a Component in React? +
+8. What is a Controlled component? What is an Uncontrolled component?
 
-11. What are controlled and uncontrolled components? +/-
+9. What is a `key` prop? Why do we need to include it when creating an array of
+   React elements?
 
-<!-- post 16.8 -->
+10. What is a `ref` prop?
 
-12. What built-in hooks do you know?
-    useState
-    useEffect
+11. What is a `<React.Fragment />`?
 
-    useContext
-    useReducer
-    useRef
+12. How to style a React element?
 
-    useCallback
-    useMemo
+---
 
-    useLayoutEffect
-    useImperativeHandle
-    useDebugValue
+## Intermediate
 
-    useId
-    useTransition
-    useDeferredValue
+0. What is Context?
 
-13. What is React Context and how to use it? +
+   - How to use it inside class components?
+   - How to use it inside function components with hooks?
 
-14. What is error boundary?
+1. What is an Error Boundary?
 
-15. What are React hooks and why use them? +/-
+   - How to catch an error inside an event handler?
 
-16. What are the rules that must be followed while using React Hooks? +
+2. What is a Higher-Order Component?
 
-17. What is the use of useEffect? +/-
+3. What is Render Props?
 
-18. What are Custom Hooks?
+4. What is Code Splitting? How to perform it in React?
 
-19. How to pass data between sibling components? +
+5. What is `<React.StrictMode />`?
 
-What is code splitting and how to perform it in react?
+6. What is a `React.PureComponent`?
+
+   - How to implement it inside functional components? (`React.memo()`)
+
+7. What is state updates batching? How does it work?
+
+8. What is CSS-in-JS?
+
+---
+
+## Advanced
+
+0. What is Reconciliation? <br />
+   **Reconciliation** is the process of syncing the virtual dom with the real dom.
+
+   - What is the Virtual DOM?
+   - What is the Reconciliation (Diffing) Algorithm?
+
+1. What is React Fiber?
+
+---
+
+## Hooks
+
+0. What are hooks and why use them?
+
+1. What are the rules that must be followed while using hooks?
+
+2. What is the use of `useEffect()` hook?
+
+3. What is the use of `useMemo()` hook?
+
+4. When do you use the functional update form of setState?
+
+5. What are custom hooks?
+
+6. How does React associate hook calls with components?
