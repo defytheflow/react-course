@@ -5,6 +5,7 @@ type Todo = {
   id: number
   text: string
   done: boolean
+  date: Date
 }
 
 enum Filter {
@@ -13,77 +14,121 @@ enum Filter {
   COMPLETED = 'completed',
 }
 
+enum Order {
+  EARLIEST = 'earliest',
+  LATEST = 'latest',
+}
+
+const initialTodos: Todo[] = [
+  {
+    id: 1,
+    text: 'Learn React',
+    done: true,
+    date: new Date(),
+  },
+  {
+    id: 2,
+    text: 'Learn Redux',
+    done: false,
+    date: new Date(),
+  },
+]
+
+type ActionType =
+  | { type: 'toggle'; payload: number }
+  | { type: 'remove'; payload: number }
+  | { type: 'add'; payload: string }
+  | { type: 'markAllCompleted' }
+  | { type: 'clearCompleted' }
+
+function todosReducer(
+  state: typeof initialTodos,
+  action: ActionType
+): typeof initialTodos {
+  switch (action.type) {
+    case 'toggle': {
+      const id = action.payload
+      return state.map(todo => (todo.id === id ? { ...todo, done: !todo.done } : todo))
+    }
+    case 'remove': {
+      return state.filter(todo => todo.id !== action.payload)
+    }
+    case 'add': {
+      const newTodo: Todo = {
+        id: Date.now(),
+        text: action.payload,
+        done: false,
+        date: new Date(),
+      }
+      return state.concat(newTodo)
+    }
+    case 'markAllCompleted': {
+      return state.map(todo => ({ ...todo, done: true }))
+    }
+    case 'clearCompleted': {
+      return state.filter(todo => !todo.done)
+    }
+  }
+}
+
+const filterFuncs: Record<Filter, (todo: Todo) => boolean> = {
+  [Filter.ALL]: Boolean,
+  [Filter.ACTIVE]: todo => !todo.done,
+  [Filter.COMPLETED]: todo => todo.done,
+}
+
+const compareFuncs: Record<Order, (a: Todo, b: Todo) => number> = {
+  [Order.EARLIEST]: (a, b) => a.date.getTime() - b.date.getTime(),
+  [Order.LATEST]: (a, b) => b.date.getTime() - a.date.getTime(),
+}
+
+function calculateTodos(todos: Todo[], filter: Filter, order: Order | null): Todo[] {
+  const filteredTodos = todos.filter(filterFuncs[filter])
+
+  if (order !== null) {
+    filteredTodos.sort(compareFuncs[order])
+  }
+
+  return filteredTodos
+}
+
 // Possible other features:
 // - search by name
 // - edit name
-// - sort by earliest / sort by latest (https://codepen.io/pen?&editors=0010&layout=left)
 // - add new to start / add new to end
 // - color filters
 // - local storage support
-// - this application can be rewritten with a reducer.
-
 function TodoApp() {
-  const [todos, setTodos] = React.useState<Todo[]>([])
+  const [todos, dispatch] = React.useReducer(todosReducer, initialTodos)
   const [filter, setFilter] = React.useState(Filter.ALL)
-
-  const filteredTodos = React.useMemo(() => {
-    switch (filter) {
-      case Filter.ALL: {
-        return todos
-      }
-      case Filter.ACTIVE: {
-        return todos.filter(todo => !todo.done)
-      }
-      case Filter.COMPLETED: {
-        return todos.filter(todo => todo.done)
-      }
-      default: {
-        return todos
-      }
-    }
-  }, [filter, todos])
-
-  function handleTodoToggle(todo: Todo) {
-    setTodos(prevTodos =>
-      prevTodos.map(t => (t.id === todo.id ? { ...t, done: !todo.done } : t))
-    )
-  }
-
-  function handleTodoDelete(todo: Todo) {
-    setTodos(prevTodos => prevTodos.filter(t => t.id !== todo.id))
-  }
-
-  function handleTodoAdd(newTodo: Todo) {
-    setTodos(prevTodos => prevTodos.concat(newTodo))
-  }
-
-  function handleMarkAllCompleted() {
-    setTodos(prevTodos => prevTodos.map(todo => ({ ...todo, done: true })))
-  }
-
-  function handleClearCompleted() {
-    setTodos(prevTodos => prevTodos.filter(todo => !todo.done))
-  }
+  const [order, setOrder] = React.useState<Order | null>(null)
+  const filteredTodos = calculateTodos(todos, filter, order)
 
   const numTodosRemaining = todos.filter(todo => !todo.done).length
   const suffix = numTodosRemaining === 1 ? '' : 's'
 
   return (
     <div>
-      <h2>Todo</h2>
-      <TodoList
-        todos={filteredTodos}
-        onTodoToggle={handleTodoToggle}
-        onTodoDelete={handleTodoDelete}
-      />
-      <TodoAddForm todos={todos} onTodoAdd={handleTodoAdd} />
+      <h2 style={{ marginTop: 0 }}>Todo</h2>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <button
+          style={{ fontWeight: order === Order.EARLIEST ? 'bold' : undefined }}
+          onClick={() => setOrder(Order.EARLIEST)}
+        >
+          Sort by Earliest
+        </button>
+        <button
+          style={{ fontWeight: order === Order.LATEST ? 'bold' : undefined }}
+          onClick={() => setOrder(Order.LATEST)}
+        >
+          Sort by Latest
+        </button>
+      </div>
+      <TodoList todos={filteredTodos} dispatch={dispatch} />
+      <TodoAddForm todos={todos} dispatch={dispatch} />
       <h3>Remaining Todos</h3>
       <strong>{numTodosRemaining}</strong> item{suffix} left
-      <TodoActions
-        todos={todos}
-        onMarkAllCompleted={handleMarkAllCompleted}
-        onClearCompleted={handleClearCompleted}
-      />
+      <TodoActions dispatch={dispatch} />
       <TodoFilter filter={filter} onFilterChange={setFilter} />
     </div>
   )
@@ -91,22 +136,28 @@ function TodoApp() {
 
 function TodoList({
   todos,
-  onTodoToggle,
-  onTodoDelete,
+  dispatch,
 }: {
   todos: Todo[]
-  onTodoToggle: (todo: Todo) => void
-  onTodoDelete: (todo: Todo) => void
+  dispatch: React.Dispatch<ActionType>
 }) {
   return (
     <ul>
       {todos.map(todo => (
         <li key={todo.id} style={{ marginTop: 10 }}>
-          <input type='checkbox' checked={todo.done} onChange={e => onTodoToggle(todo)} />
+          <input
+            type='checkbox'
+            checked={todo.done}
+            onChange={() => dispatch({ type: 'toggle', payload: todo.id })}
+          />
           <span style={{ margin: '0 5px' }}>{todo.text}</span>
-          <button aria-label='Remove item' onClick={() => onTodoDelete(todo)}>
+          <button
+            aria-label='Remove item'
+            onClick={() => dispatch({ type: 'remove', payload: todo.id })}
+          >
             &times;
           </button>
+          <span style={{ marginLeft: 8 }}>{todo.date.toLocaleTimeString()}</span>
         </li>
       ))}
     </ul>
@@ -115,10 +166,10 @@ function TodoList({
 
 function TodoAddForm({
   todos,
-  onTodoAdd,
+  dispatch,
 }: {
   todos: Todo[]
-  onTodoAdd: (newTodo: Todo) => void
+  dispatch: React.Dispatch<ActionType>
 }) {
   const [text, setText] = React.useState('')
   const inputRef = React.useRef<HTMLInputElement>(null)
@@ -130,9 +181,9 @@ function TodoAddForm({
       return
     }
 
-    const newTodo = { id: Date.now(), text, done: false }
-    onTodoAdd(newTodo)
+    dispatch({ type: 'add', payload: text })
     setText('')
+
     // Form doesn't focus the input if submit was triggered by a button click.
     inputRef.current?.focus()
   }
@@ -156,31 +207,19 @@ function TodoAddForm({
   )
 }
 
-function TodoActions({
-  todos,
-  onMarkAllCompleted,
-  onClearCompleted,
-}: {
-  todos: Todo[]
-  onMarkAllCompleted: () => void
-  onClearCompleted: () => void
-}) {
+function TodoActions({ dispatch }: { dispatch: React.Dispatch<ActionType> }) {
   return (
     <div style={{ marginTop: 10 }}>
       <h3 id='actions-heading'>Actions</h3>
-      <div role='group' aria-labelledby='actions-heading'>
-        <button
-          // disabled={todos.every(todo => todo.done)}
-          onClick={onMarkAllCompleted}
-          style={{ marginRight: 8 }}
-        >
+      <div
+        role='group'
+        aria-labelledby='actions-heading'
+        style={{ display: 'flex', gap: 8 }}
+      >
+        <button onClick={() => dispatch({ type: 'markAllCompleted' })}>
           Mark all Completed
         </button>
-        <button
-          // disabled={!todos.some(todo => todo.done)}
-          onClick={onClearCompleted}
-          style={{ marginRight: 8 }}
-        >
+        <button onClick={() => dispatch({ type: 'clearCompleted' })}>
           Clear Completed
         </button>
       </div>
@@ -198,14 +237,15 @@ function TodoFilter({
   return (
     <div style={{ marginTop: 10 }}>
       <h3 id='filter-status-heading'>Filter by status</h3>
-      <div role='group' aria-labelledby='filter-status-heading'>
+      <div
+        role='group'
+        aria-labelledby='filter-status-heading'
+        style={{ display: 'flex', gap: 8 }}
+      >
         {Object.values(Filter).map(filterValue => (
           <button
             key={filterValue}
-            style={{
-              marginRight: 8,
-              fontWeight: filter === filterValue ? 'bold' : undefined,
-            }}
+            style={{ fontWeight: filter === filterValue ? 'bold' : undefined }}
             onClick={() => onFilterChange(filterValue)}
           >
             {capitalize(filterValue)}
