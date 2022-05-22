@@ -1,5 +1,5 @@
 import React from 'react'
-import withTitle from '../../../utils/with-title'
+import withTitle from '../../utils/with-title'
 
 type Todo = {
   id: number

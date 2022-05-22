@@ -5,11 +5,12 @@ import Greeting from './exercises/01-beginner/01-greeting'
 import Light from './exercises/01-beginner/03-light'
 import Toggle from './exercises/01-beginner/02-toggle'
 import Timer from './exercises/02-intermediate/timer'
-import Todo from './exercises/02-intermediate/todo/todo'
+import Todo from './exercises/02-intermediate/todo'
 import Pokemon from './exercises/02-intermediate/pokemon'
 import Mathematics from './exercises/01-beginner/04-math'
 import BuggyCounter from './exercises/01-beginner/06-buggy-counter'
 import Search from './exercises/01-beginner/08-search'
+import Fruits from './exercises/01-beginner/10-fruits'
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
           <NavLink to='/exercises/beginner/counter'>Counter</NavLink>
           <NavLink to='/exercises/beginner/buggy-counter'>Buggy Counter</NavLink>
           <NavLink to='/exercises/beginner/search'>Search</NavLink>
+          <NavLink to='/exercises/beginner/fruits'>Fruits</NavLink>
         </div>
         <br />
         <div className='flex gap-4'>
@@ -34,13 +36,14 @@ export default function App() {
       <Routes>
         <Route path='exercises'>
           <Route path='beginner'>
+            <Route path='buggy-counter' element={<BuggyCounter />} />
             <Route path='counter' element={<Counter />} />
+            <Route path='fruits' element={<Fruits />} />
             <Route path='greeting' element={<Greeting />} />
             <Route path='light' element={<Light />} />
             <Route path='math' element={<Mathematics />} />
-            <Route path='toggle' element={<Toggle />} />
-            <Route path='buggy-counter' element={<BuggyCounter />} />
             <Route path='search' element={<Search />} />
+            <Route path='toggle' element={<Toggle />} />
           </Route>
           <Route path='intermediate'>
             <Route path='pokemon' element={<Pokemon />} />

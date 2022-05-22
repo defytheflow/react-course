@@ -1,15 +1,16 @@
 import React from 'react'
-import { ErrorBoundary } from 'react-error-boundary'
+import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
 import withTitle from '../../utils/with-title'
 
 function BuggyCounterApp() {
   const [key, setKey] = React.useState(0)
+  const handleReset = () => setKey(prevKey => prevKey + 1)
 
   return (
     <ErrorBoundary
-      key={key}
       FallbackComponent={ErrorFallback}
-      onReset={() => setKey(prevKey => prevKey + 1)}
+      onReset={handleReset}
+      resetKeys={[key]}
     >
       <BuggyCounter />
     </ErrorBoundary>
@@ -18,35 +19,29 @@ function BuggyCounterApp() {
 
 function BuggyCounter() {
   const [count, setCount] = React.useState(0)
-  const handleClick = () => setCount(prevCount => prevCount + 1)
+  const increment = () => setCount(prevCount => prevCount + 1)
 
   if (count === 5) {
-    // Simulate a JS error
-    throw new Error('I crashed!')
+    throw new Error('I crashed!') // Simulate a JS error
   }
 
   return (
     <div>
       <strong>{count}</strong>
-      <button onClick={handleClick} style={{ marginLeft: 2 }}>
+      <button onClick={increment} style={{ marginLeft: 2 }}>
         Increment
       </button>
     </div>
   )
 }
 
-function ErrorFallback({
-  error,
-  resetErrorBoundary,
-}: {
-  error: Error
-  resetErrorBoundary: () => void
-}) {
+function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   return (
-    <div>
-      <p>Something went wrong:</p>
+    <div role='alert'>
+      {/* Show how "role='alert'" drastically improves experience with VoiceOver! */}
+      There was an error:
       <pre>{error.message}</pre>
-      <button onClick={resetErrorBoundary}>Reset</button>
+      <button onClick={resetErrorBoundary}>Try again</button>
     </div>
   )
 }
