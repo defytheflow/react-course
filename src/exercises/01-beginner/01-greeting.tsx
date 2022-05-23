@@ -2,6 +2,10 @@
 import React from 'react'
 import withTitle from '../../utils/with-title'
 
+function GreetingApp() {
+  return <Greeting initialName='John' />
+}
+
 function Greeting({ initialName = '' }: { initialName?: string }) {
   const [name, setName] = React.useState(initialName)
 
@@ -14,10 +18,6 @@ function Greeting({ initialName = '' }: { initialName?: string }) {
       {name ? <strong>Hello, {name}!</strong> : 'Please type your name'}
     </div>
   )
-}
-
-function GreetingApp() {
-  return <Greeting initialName='John' />
 }
 
 export default withTitle(GreetingApp, 'Greeting')

@@ -1,8 +1,12 @@
 import React from 'react'
 import withTitle from '../../utils/with-title'
 
+function CounterApp() {
+  return <Counter initialCount={5} />
+}
+
 function Counter({
-  initialCount = 5,
+  initialCount = 0,
   initialIncrementAmount = 2,
 }: {
   initialCount?: number
@@ -17,6 +21,10 @@ function Counter({
 
   const incrementByAmount = () => setCount(prevCount => prevCount + incrementAmount)
   const incrementAsync = () => setTimeout(increment, 1000)
+
+  function incrementIfOdd() {
+    setCount(prevCount => (prevCount % 2 === 1 ? prevCount + 1 : prevCount))
+  }
 
   function reset() {
     setCount(initialCount)
@@ -48,8 +56,8 @@ function Counter({
           onChange={handleIncrementAmountChange}
         />
         <button onClick={incrementByAmount}>Add Amount</button>
-        <button onClick={incrementAsync}>Add Async</button>
-        <button onClick={count % 2 === 1 ? increment : undefined}>Add If Odd</button>
+        <button onClick={incrementAsync}>Increment Async</button>
+        <button onClick={incrementIfOdd}>Increment If Odd</button>
         <button onClick={reset}>Reset</button>
       </div>
     </div>
@@ -66,4 +74,4 @@ function usePrevious<T>(value: T): T | null {
   return valueRef.current
 }
 
-export default withTitle(Counter, 'Counter')
+export default withTitle(CounterApp, 'Counter')
