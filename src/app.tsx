@@ -11,6 +11,7 @@ import Mathematics from './exercises/01-beginner/04-math'
 import BuggyCounter from './exercises/01-beginner/06-buggy-counter'
 import Search from './exercises/01-beginner/08-search'
 import Fruits from './exercises/01-beginner/10-fruits'
+import Messenger from './exercises/01-beginner/11-messenger'
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
           <NavLink to='/exercises/beginner/buggy-counter'>Buggy Counter</NavLink>
           <NavLink to='/exercises/beginner/search'>Search</NavLink>
           <NavLink to='/exercises/beginner/fruits'>Fruits</NavLink>
+          <NavLink to='/exercises/beginner/messenger'>Messenger</NavLink>
         </div>
         <br />
         <div className='flex gap-4'>
@@ -42,6 +44,7 @@ export default function App() {
             <Route path='greeting' element={<Greeting />} />
             <Route path='light' element={<Light />} />
             <Route path='math' element={<Mathematics />} />
+            <Route path='messenger' element={<Messenger />} />
             <Route path='search' element={<Search />} />
             <Route path='toggle' element={<Toggle />} />
           </Route>

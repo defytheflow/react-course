@@ -27,12 +27,13 @@ const initialTasks = [
 ]
 
 type TaskType = typeof initialTasks[number]
+type TaskId = TaskType['id']
 
 type ActionType =
-  | { type: 'toggle'; payload: number }
-  | { type: 'remove'; payload: number }
+  | { type: 'toggle'; payload: TaskId }
+  | { type: 'remove'; payload: TaskId }
   | { type: 'add'; payload: string }
-  | { type: 'edit'; payload: { id: number; text: string } }
+  | { type: 'edit'; payload: { id: TaskId; text: string } }
   | { type: 'markAllCompleted' }
   | { type: 'clearCompleted' }
 
