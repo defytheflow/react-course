@@ -1,7 +1,6 @@
 import React from 'react'
-import withTitle from '../../utils/with-title'
 
-function Search() {
+export default function Search() {
   const [data, setData] = React.useState({ hits: [] })
   const [query, setQuery] = React.useState('react')
 
@@ -33,5 +32,3 @@ function Search() {
     </div>
   )
 }
-
-export default withTitle(Search, 'Search')

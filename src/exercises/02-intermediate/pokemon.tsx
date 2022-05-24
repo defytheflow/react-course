@@ -1,8 +1,8 @@
 // https://github.com/kentcdodds/react-hooks
 import React from 'react'
-import withTitle from '../../utils/with-title'
+import Button from '../../utils/button'
 
-function PokemonApp() {
+export default function PokemonApp() {
   const [pokemonName, setPokemonName] = React.useState('')
 
   function handleSubmit(newPokemonName: string) {
@@ -94,9 +94,9 @@ function PokemonForm({
         value={pokemonName}
         placeholder='Which pokemon?'
       />
-      <button className='btn-fetch' type='submit' disabled={pokemonName.length === 0}>
+      <Button className='btn-fetch' type='submit' disabled={pokemonName.length === 0}>
         Fetch!
-      </button>
+      </Button>
       <div className='btn-pokemon'>
         Out of ideas? Try{' '}
         <button
@@ -299,5 +299,3 @@ async function fetchPokemon(pokemonName: string) {
     throw new Error(`No pokemon with the name "${pokemonName}"`)
   }
 }
-
-export default withTitle(PokemonApp, 'Pokemon')

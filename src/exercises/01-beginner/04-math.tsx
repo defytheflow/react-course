@@ -1,10 +1,9 @@
 import React from 'react'
-import withTitle from '../../utils/with-title'
 
 const operators = ['+', '-', '×', '÷'] as const
 type Operator = typeof operators[number]
 
-function Mathematics() {
+export default function Mathematics() {
   const [number1, setNumber1] = React.useState<number | undefined>()
   const [number2, setNumber2] = React.useState<number | undefined>()
   const [operator, setOperator] = React.useState<Operator>(operators[0])
@@ -64,5 +63,3 @@ function formatResult(result?: number) {
     return Number.isInteger(result) ? result : result.toFixed(2)
   }
 }
-
-export default withTitle(Mathematics, 'Math')

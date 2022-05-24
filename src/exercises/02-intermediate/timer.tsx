@@ -1,7 +1,7 @@
 import React from 'react'
-import withTitle from '../../utils/with-title'
+import Button from '../../utils/button'
 
-function Timer() {
+export default function Timer() {
   const [timeLeft, setTimeLeft] = React.useState(0)
   const [isPaused, setIsPaused] = React.useState<boolean | null>(null)
   const activeTimerRef = React.useRef<number | null>(null)
@@ -21,6 +21,7 @@ function Timer() {
 
   function cancel() {
     activeTimerRef.current = null
+    intervalRef.current = null
     removeInterval()
     setTimeLeft(0)
     setIsPaused(false)
@@ -92,16 +93,20 @@ function Timer() {
           max={activeTimerRef.current!}
         />
       </div>
-      <div style={{ display: 'flex', gap: 4, marginTop: 10 }}>
-        <button disabled={isIdle} onClick={isPaused ? resume : pause}>
+      <div
+        style={{ display: 'flex', gap: 4, marginTop: 10 }}
+        role='group'
+        aria-label='Timer actions'
+      >
+        <Button disabled={isIdle} onClick={isPaused ? resume : pause}>
           {isPaused ? 'Resume' : 'Pause'}
-        </button>
-        <button disabled={isIdle} onClick={cancel}>
+        </Button>
+        <Button disabled={isIdle} onClick={cancel}>
           Cancel
-        </button>
-        <button onClick={reset} disabled={isIdle}>
+        </Button>
+        <Button disabled={isIdle} onClick={reset}>
           Reset
-        </button>
+        </Button>
       </div>
     </div>
   )
@@ -123,5 +128,3 @@ function formatTimeLeft(timeLeft: number): string {
   const secs = timeLeft - mins * 60
   return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
 }
-
-export default withTitle(Timer, 'Timer')

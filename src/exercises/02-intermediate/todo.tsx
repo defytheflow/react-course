@@ -1,12 +1,4 @@
 import React from 'react'
-import withTitle from '../../utils/with-title'
-
-type Todo = {
-  id: number
-  text: string
-  done: boolean
-  date: Date
-}
 
 enum Filter {
   ALL = 'all',
@@ -19,7 +11,7 @@ enum Order {
   LATEST = 'latest',
 }
 
-const initialTodos: Todo[] = [
+const initialTasks = [
   {
     id: 1,
     text: 'Learn React',
@@ -34,83 +26,93 @@ const initialTodos: Todo[] = [
   },
 ]
 
+type TaskType = typeof initialTasks[number]
+
 type ActionType =
   | { type: 'toggle'; payload: number }
   | { type: 'remove'; payload: number }
   | { type: 'add'; payload: string }
+  | { type: 'edit'; payload: { id: number; text: string } }
   | { type: 'markAllCompleted' }
   | { type: 'clearCompleted' }
 
-function todosReducer(
-  state: typeof initialTodos,
+function tasksReducer(
+  state: typeof initialTasks,
   action: ActionType
-): typeof initialTodos {
+): typeof initialTasks {
   switch (action.type) {
     case 'toggle': {
       const id = action.payload
-      return state.map(todo => (todo.id === id ? { ...todo, done: !todo.done } : todo))
+      return state.map(task => (task.id === id ? { ...task, done: !task.done } : task))
     }
     case 'remove': {
-      return state.filter(todo => todo.id !== action.payload)
+      return state.filter(task => task.id !== action.payload)
     }
     case 'add': {
-      const newTodo: Todo = {
+      const newTask: TaskType = {
         id: Date.now(),
         text: action.payload,
         done: false,
         date: new Date(),
       }
-      return state.concat(newTodo)
+      return state.concat(newTask)
+    }
+    case 'edit': {
+      const { id, text } = action.payload
+      return state.map(task => (task.id === id ? { ...task, text } : task))
     }
     case 'markAllCompleted': {
-      return state.map(todo => ({ ...todo, done: true }))
+      return state.map(task => ({ ...task, done: true }))
     }
     case 'clearCompleted': {
-      return state.filter(todo => !todo.done)
+      return state.filter(task => !task.done)
     }
   }
 }
 
-const filterFuncs: Record<Filter, (todo: Todo) => boolean> = {
+const filterFuncs: Record<Filter, (task: TaskType) => boolean> = {
   [Filter.ALL]: Boolean,
-  [Filter.ACTIVE]: todo => !todo.done,
-  [Filter.COMPLETED]: todo => todo.done,
+  [Filter.ACTIVE]: task => !task.done,
+  [Filter.COMPLETED]: task => task.done,
 }
 
-const compareFuncs: Record<Order, (a: Todo, b: Todo) => number> = {
+const compareFuncs: Record<Order, (a: TaskType, b: TaskType) => number> = {
   [Order.EARLIEST]: (a, b) => a.date.getTime() - b.date.getTime(),
   [Order.LATEST]: (a, b) => b.date.getTime() - a.date.getTime(),
 }
 
-function calculateTodos(todos: Todo[], filter: Filter, order: Order | null): Todo[] {
-  const filteredTodos = todos.filter(filterFuncs[filter])
+function calculateTasks(
+  tasks: TaskType[],
+  filter: Filter,
+  order: Order | null
+): TaskType[] {
+  const filteredTasks = tasks.filter(filterFuncs[filter])
 
   if (order !== null) {
-    filteredTodos.sort(compareFuncs[order])
+    filteredTasks.sort(compareFuncs[order])
   }
 
-  return filteredTodos
+  return filteredTasks
 }
 
 // Possible other features:
 // - search by name
-// - edit name
 // - add new to start / add new to end
 // - color filters
 // - local storage support
-function TodoApp() {
-  const [todos, dispatch] = React.useReducer(todosReducer, initialTodos)
+export default function TodoApp() {
+  const [tasks, dispatch] = React.useReducer(tasksReducer, initialTasks)
   const [filter, setFilter] = React.useState(Filter.ALL)
   const [order, setOrder] = React.useState<Order | null>(null)
-  const filteredTodos = calculateTodos(todos, filter, order)
 
-  const numTodosRemaining = todos.filter(todo => !todo.done).length
-  const suffix = numTodosRemaining === 1 ? '' : 's'
+  const filteredTasks = calculateTasks(tasks, filter, order)
+  const tasksRemaining = tasks.filter(task => !task.done).length
+  const suffix = tasksRemaining === 1 ? '' : 's'
 
   return (
     <div>
       <h2 style={{ marginTop: 0 }}>Todo</h2>
-      <div style={{ display: 'flex', gap: 8 }}>
+      <div style={{ display: 'flex', gap: 5 }}>
         <button
           style={{ fontWeight: order === Order.EARLIEST ? 'bold' : undefined }}
           onClick={() => setOrder(Order.EARLIEST)}
@@ -124,51 +126,89 @@ function TodoApp() {
           Sort by Latest
         </button>
       </div>
-      <TodoList todos={filteredTodos} dispatch={dispatch} />
-      <TodoAddForm todos={todos} dispatch={dispatch} />
+      <TaskList tasks={filteredTasks} dispatch={dispatch} />
+      <TaskForm tasks={tasks} dispatch={dispatch} />
       <h3>Remaining Todos</h3>
-      <strong>{numTodosRemaining}</strong> item{suffix} left
-      <TodoActions dispatch={dispatch} />
-      <TodoFilter filter={filter} onFilterChange={setFilter} />
+      <strong>{tasksRemaining}</strong> item{suffix} left
+      <TaskActions dispatch={dispatch} />
+      <TaskFilter filter={filter} onFilterChange={setFilter} />
     </div>
   )
 }
 
-function TodoList({
-  todos,
+function TaskList({
+  tasks,
   dispatch,
 }: {
-  todos: Todo[]
+  tasks: TaskType[]
   dispatch: React.Dispatch<ActionType>
 }) {
   return (
     <ul>
-      {todos.map(todo => (
-        <li key={todo.id} style={{ marginTop: 10 }}>
-          <input
-            type='checkbox'
-            checked={todo.done}
-            onChange={() => dispatch({ type: 'toggle', payload: todo.id })}
-          />
-          <span style={{ margin: '0 5px' }}>{todo.text}</span>
-          <button
-            aria-label='Remove item'
-            onClick={() => dispatch({ type: 'remove', payload: todo.id })}
-          >
-            &times;
-          </button>
-          <span style={{ marginLeft: 8 }}>{todo.date.toLocaleTimeString()}</span>
+      {tasks.map(task => (
+        <li key={task.id} style={{ marginTop: 10 }}>
+          <Task task={task} dispatch={dispatch} />
         </li>
       ))}
     </ul>
   )
 }
 
-function TodoAddForm({
-  todos,
+function Task({
+  task,
   dispatch,
 }: {
-  todos: Todo[]
+  task: TaskType
+  dispatch: React.Dispatch<ActionType>
+}) {
+  const [isEditing, setIsEditing] = React.useState(false)
+  const inputRef = React.useRef<HTMLInputElement>(null)
+
+  React.useEffect(() => {
+    if (isEditing) {
+      inputRef.current?.focus()
+    }
+  }, [isEditing])
+
+  const textELement = isEditing ? (
+    <input
+      ref={inputRef}
+      value={task.text}
+      onChange={e =>
+        dispatch({ type: 'edit', payload: { id: task.id, text: e.target.value } })
+      }
+      onKeyDown={e => e.key === 'Enter' && setIsEditing(!isEditing)}
+    />
+  ) : (
+    task.text
+  )
+
+  return (
+    <>
+      <label>
+        <input
+          type='checkbox'
+          checked={task.done}
+          onChange={() => dispatch({ type: 'toggle', payload: task.id })}
+        />
+        <span style={{ margin: '0 5px' }}>{textELement}</span>
+      </label>
+      <button style={{ marginRight: 5 }} onClick={() => setIsEditing(!isEditing)}>
+        {isEditing ? 'save' : 'edit'}
+      </button>
+      <button onClick={() => dispatch({ type: 'remove', payload: task.id })}>
+        delete
+      </button>
+      <span style={{ marginLeft: 5 }}>{task.date.toLocaleTimeString()}</span>
+    </>
+  )
+}
+
+function TaskForm({
+  tasks,
+  dispatch,
+}: {
+  tasks: TaskType[]
   dispatch: React.Dispatch<ActionType>
 }) {
   const [text, setText] = React.useState('')
@@ -190,31 +230,31 @@ function TodoAddForm({
 
   return (
     <form onSubmit={handleSubmit}>
-      <label htmlFor='new-todo' style={{ display: 'block' }}>
+      <label htmlFor='new-task' style={{ display: 'block' }}>
         What needs to be done?
       </label>
       <input
-        id='new-todo'
+        id='new-task'
         ref={inputRef}
         style={{ display: 'block', marginTop: 10 }}
         value={text}
         onChange={e => setText(e.target.value)}
       />
       <button type='submit' style={{ marginTop: 10 }}>
-        Add #{todos.length + 1}
+        Add #{tasks.length + 1}
       </button>
     </form>
   )
 }
 
-function TodoActions({ dispatch }: { dispatch: React.Dispatch<ActionType> }) {
+function TaskActions({ dispatch }: { dispatch: React.Dispatch<ActionType> }) {
   return (
     <div style={{ marginTop: 10 }}>
       <h3 id='actions-heading'>Actions</h3>
       <div
         role='group'
         aria-labelledby='actions-heading'
-        style={{ display: 'flex', gap: 8 }}
+        style={{ display: 'flex', gap: 5 }}
       >
         <button onClick={() => dispatch({ type: 'markAllCompleted' })}>
           Mark all Completed
@@ -227,12 +267,12 @@ function TodoActions({ dispatch }: { dispatch: React.Dispatch<ActionType> }) {
   )
 }
 
-function TodoFilter({
+function TaskFilter({
   filter,
   onFilterChange,
 }: {
   filter: Filter
-  onFilterChange: (newFilter: Filter) => void
+  onFilterChange: React.Dispatch<React.SetStateAction<Filter>>
 }) {
   return (
     <div style={{ marginTop: 10 }}>
@@ -240,7 +280,7 @@ function TodoFilter({
       <div
         role='group'
         aria-labelledby='filter-status-heading'
-        style={{ display: 'flex', gap: 8 }}
+        style={{ display: 'flex', gap: 5 }}
       >
         {Object.values(Filter).map(filterValue => (
           <button
@@ -257,5 +297,3 @@ function TodoFilter({
 }
 
 const capitalize = (s: string) => s[0].toUpperCase() + s.slice(1)
-
-export default withTitle(TodoApp, 'Todo')

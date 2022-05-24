@@ -1,6 +1,6 @@
 // https://github.com/kentcdodds/react-fundamentals
 import React from 'react'
-import withTitle from '../../utils/with-title'
+import Button from '../../utils/button'
 
 const allItems = [
   { id: 'apple', value: '🍎 apple' },
@@ -11,7 +11,7 @@ const allItems = [
 
 type ItemType = typeof allItems[number]
 
-function Fruits() {
+export default function Fruits() {
   const [items, setItems] = React.useState(allItems)
 
   function addItem() {
@@ -27,9 +27,9 @@ function Fruits() {
 
   return (
     <div className='keys'>
-      <button disabled={items.length >= allItems.length} onClick={addItem}>
+      <Button disabled={items.length >= allItems.length} onClick={addItem}>
         add item
-      </button>
+      </Button>
       <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
         {items.map(item => (
           <li key={item.id}>
@@ -44,8 +44,6 @@ function Fruits() {
     </div>
   )
 }
-
-export default withTitle(Fruits, 'Fruits')
 
 // function FocusDemo() {
 //   const [items, setItems] = React.useState([

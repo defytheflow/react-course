@@ -1,7 +1,6 @@
 import React from 'react'
-import withTitle from '../../utils/with-title'
 
-function CounterApp() {
+export default function CounterApp() {
   return <Counter initialCount={5} />
 }
 
@@ -73,5 +72,3 @@ function usePrevious<T>(value: T): T | null {
 
   return valueRef.current
 }
-
-export default withTitle(CounterApp, 'Counter')

@@ -1,8 +1,7 @@
 // https://github.com/kentcdodds/react-hooks
 import React from 'react'
-import withTitle from '../../utils/with-title'
 
-function GreetingApp() {
+export default function GreetingApp() {
   return <Greeting initialName='John' />
 }
 
@@ -19,5 +18,3 @@ function Greeting({ initialName = '' }: { initialName?: string }) {
     </div>
   )
 }
-
-export default withTitle(GreetingApp, 'Greeting')

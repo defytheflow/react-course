@@ -1,7 +1,6 @@
 import React from 'react'
-import withTitle from '../../utils/with-title'
 
-function Toggle() {
+export default function Toggle() {
   const [show, setShow] = React.useState(true)
   const verb = show ? 'Hide' : 'Show'
   const toggle = () => setShow(prevShow => !prevShow)
@@ -13,5 +12,3 @@ function Toggle() {
     </div>
   )
 }
-
-export default withTitle(Toggle, 'Toggle')

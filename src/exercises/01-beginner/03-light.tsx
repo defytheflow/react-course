@@ -1,5 +1,4 @@
 import React from 'react'
-import withTitle from '../../utils/with-title'
 
 enum LightState {
   OFF = 'off',
@@ -17,7 +16,7 @@ const colors = {
   [LightState.HIGH]: '#FFFF00',
 }
 
-function Light() {
+export default function Light() {
   const [state, setState] = React.useState(LightState.OFF)
 
   function toggle() {
@@ -34,5 +33,3 @@ function Light() {
     </div>
   )
 }
-
-export default withTitle(Light, 'Light')
