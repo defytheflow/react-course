@@ -13,6 +13,8 @@ function Counter({
 }) {
   const [count, setCount] = React.useState(initialCount)
   const [incrementAmount, setIncrementAmount] = React.useState(initialIncrementAmount)
+  const [pending, setPending] = React.useState(0)
+
   const previousCount = usePrevious(count)
 
   const increment = () => setCount(prevCount => prevCount + 1)
@@ -23,6 +25,19 @@ function Counter({
 
   function incrementIfOdd() {
     setCount(prevCount => (prevCount % 2 === 1 ? prevCount + 1 : prevCount))
+  }
+
+  function incrementTriple() {
+    increment()
+    increment()
+    increment()
+  }
+
+  async function incrementPending() {
+    setPending(prevPending => prevPending + 1)
+    await new Promise(resolve => setTimeout(resolve, 3000))
+    setPending(prevPending => prevPending - 1)
+    increment()
   }
 
   function reset() {
@@ -38,11 +53,12 @@ function Counter({
   return (
     <div>
       <div>Previous: {previousCount}</div>
+      <div>Pending: {pending}</div>
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
         <button aria-label='Decrement value' onClick={decrement}>
           -
         </button>
-        <span style={{ padding: '0 8px' }}>{count}</span>
+        <strong style={{ padding: '0 8px' }}>{count}</strong>
         <button aria-label='Increment value' onClick={increment}>
           +
         </button>
@@ -58,6 +74,11 @@ function Counter({
         <button onClick={incrementAsync}>Increment Async</button>
         <button onClick={incrementIfOdd}>Increment If Odd</button>
         <button onClick={reset}>Reset</button>
+        {/* Must be done using three separate useState() calls */}
+        <button aria-label='Increment 3 times' onClick={incrementTriple}>
+          +3
+        </button>
+        <button onClick={incrementPending}>Increment pending</button>
       </div>
     </div>
   )

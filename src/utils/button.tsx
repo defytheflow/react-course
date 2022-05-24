@@ -2,7 +2,6 @@ import React from 'react'
 
 export default function Button({
   disabled,
-  onClick,
   ...rest
 }: {
   disabled?: boolean
@@ -11,18 +10,10 @@ export default function Button({
   className?: string
   children?: React.ReactNode
 }) {
-  function handleClick(e: React.MouseEvent) {
-    if (disabled) {
-      e.preventDefault()
-    } else {
-      onClick?.(e)
-    }
-  }
-
   return (
     <button
       aria-disabled={disabled}
-      onClick={handleClick}
+      onClick={disabled ? e => e.preventDefault() : rest.onClick}
       style={{
         pointerEvents: disabled ? 'none' : 'all',
         opacity: disabled ? 0.5 : undefined,

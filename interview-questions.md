@@ -16,20 +16,22 @@
 
    - How do you share state between sibling components?
 
-6. What is the difference between state and props?
+6. What is an event handler?
 
-7. What are Lifecycle Methods? What methods do you know?
+7. What is the difference between state and props?
 
-8. What is a Controlled component? What is an Uncontrolled component?
+8. What are Lifecycle Methods? What methods do you know?
 
-9. What is a `key` prop? Why do we need to include it when creating an array of
-   React elements?
+9. What is a Controlled component? What is an Uncontrolled component?
 
-10. What is a `ref` prop?
+10. What is a `key` prop? Why do we need to include it when creating an array of
+    React elements?
 
-11. What is a `<React.Fragment />`?
+11. What is a `ref` prop?
 
-12. How to style a React element?
+12. What is a `<React.Fragment />`?
+
+13. How to style a React element?
 
 ---
 
