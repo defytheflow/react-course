@@ -3,7 +3,7 @@ import React from 'react'
 export default function ToggleApp() {
   return (
     <div style={{ display: 'flex', gap: 50 }}>
-      <LightSwitch />
+      <LightSwitch initialOn={false} />
       <HideElement />
       <Light />
     </div>
@@ -11,8 +11,8 @@ export default function ToggleApp() {
 }
 
 // https://beta.reactjs.org/learn/responding-to-events
-function LightSwitch() {
-  const [on, setIsOn] = React.useState(true)
+function LightSwitch({ initialOn = true }: { initialOn?: boolean }) {
+  const [on, setIsOn] = React.useState(initialOn)
   const toggle = () => setIsOn(prevOn => !prevOn)
 
   React.useEffect(() => {

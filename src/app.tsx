@@ -13,27 +13,34 @@ import Clock from './exercises/01-beginner/13-clock'
 import Pokemon from './exercises/02-intermediate/pokemon'
 import Timer from './exercises/02-intermediate/timer'
 import Todo from './exercises/02-intermediate/todo'
+import NumberDescriber from './exercises/01-beginner/00-number'
 
 export default function App() {
   return (
     <>
       <nav className='mt-4 mb-8'>
         <div className='flex justify-center gap-4'>
+          <NavLink to='/exercises/beginner/counter'>Counter</NavLink>
+          <NavLink to='/exercises/intermediate/timer'>Timer</NavLink>
+          <NavLink to='/exercises/intermediate/todo'>Todo</NavLink>
+        </div>
+        <br />
+
+        <div className='flex justify-center gap-4'>
+          <NavLink to='/exercises/beginner/number'>Number</NavLink>
           <NavLink to='/exercises/beginner/greeting'>Greeting</NavLink>
           <NavLink to='/exercises/beginner/toggle'>Toggle</NavLink>
           <NavLink to='/exercises/beginner/clock'>Clock</NavLink>
           <NavLink to='/exercises/beginner/color'>Color</NavLink>
           <NavLink to='/exercises/beginner/math'>Math</NavLink>
-          <NavLink to='/exercises/beginner/counter'>Counter</NavLink>
           <NavLink to='/exercises/beginner/buggy-counter'>Buggy Counter</NavLink>
           <NavLink to='/exercises/beginner/search'>Search</NavLink>
           <NavLink to='/exercises/beginner/fruits'>Fruits</NavLink>
           <NavLink to='/exercises/beginner/messenger'>Messenger</NavLink>
         </div>
         <br />
+
         <div className='flex justify-center gap-4'>
-          <NavLink to='/exercises/intermediate/timer'>Timer</NavLink>
-          <NavLink to='/exercises/intermediate/todo'>Todo</NavLink>
           <NavLink to='/exercises/intermediate/pokemon'>Pokemon</NavLink>
         </div>
       </nav>
@@ -50,6 +57,7 @@ export default function App() {
               <Route path='greeting' element={<Greeting />} />
               <Route path='math' element={<Mathematics />} />
               <Route path='messenger' element={<Messenger />} />
+              <Route path='number' element={<NumberDescriber />} />
               <Route path='search' element={<Search />} />
               <Route path='toggle' element={<Toggle />} />
             </Route>
