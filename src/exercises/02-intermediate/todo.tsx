@@ -120,12 +120,14 @@ export default function TodoApp() {
     <div>
       <div style={{ display: 'flex', gap: 5 }}>
         <button
+          aria-pressed={order === Order.EARLIEST}
           style={{ fontWeight: order === Order.EARLIEST ? 'bold' : undefined }}
           onClick={() => setOrder(Order.EARLIEST)}
         >
           Sort by Earliest
         </button>
         <button
+          aria-pressed={order === Order.LATEST}
           style={{ fontWeight: order === Order.LATEST ? 'bold' : undefined }}
           onClick={() => setOrder(Order.LATEST)}
         >
@@ -149,11 +151,17 @@ function TaskList({
   tasks: TaskType[]
   dispatch: React.Dispatch<ActionType>
 }) {
+  const [editedId, setEditedId] = React.useState<TaskId | null>(null)
   return (
     <ul>
       {tasks.map(task => (
         <li key={task.id} style={{ marginTop: 10 }}>
-          <TaskItem task={task} dispatch={dispatch} />
+          <TaskItem
+            task={task}
+            dispatch={dispatch}
+            isEdited={task.id === editedId}
+            onEditChange={isEdited => setEditedId(isEdited ? task.id : null)}
+          />
         </li>
       ))}
     </ul>
@@ -163,27 +171,30 @@ function TaskList({
 function TaskItem({
   task,
   dispatch,
+  isEdited,
+  onEditChange,
 }: {
   task: TaskType
   dispatch: React.Dispatch<ActionType>
+  isEdited: boolean
+  onEditChange: (isEdited: boolean) => void
 }) {
-  const [isEditing, setIsEditing] = React.useState(false)
   const inputRef = React.useRef<HTMLInputElement>(null)
 
   React.useEffect(() => {
-    if (isEditing) {
+    if (isEdited) {
       inputRef.current?.focus()
     }
-  }, [isEditing])
+  }, [isEdited])
 
-  const textElement = isEditing ? (
+  const textElement = isEdited ? (
     <input
       ref={inputRef}
       value={task.text}
       onChange={e =>
         dispatch({ type: 'edit', payload: { id: task.id, text: e.target.value } })
       }
-      onKeyDown={e => e.key === 'Enter' && setIsEditing(!isEditing)}
+      onKeyDown={e => e.key === 'Enter' && onEditChange(false)}
     />
   ) : task.done ? (
     <del>{task.text}</del>
@@ -201,10 +212,17 @@ function TaskItem({
         />
         <span style={{ margin: '0 5px' }}>{textElement}</span>
       </label>
-      <button style={{ marginRight: 5 }} onClick={() => setIsEditing(!isEditing)}>
-        {isEditing ? 'save' : 'edit'}
+      <button
+        aria-label={(isEdited ? 'Save ' : 'Edit ') + task.text}
+        style={{ marginRight: 5 }}
+        onClick={() => onEditChange(!isEdited)}
+      >
+        {isEdited ? 'save' : 'edit'}
       </button>
-      <button onClick={() => dispatch({ type: 'remove', payload: task.id })}>
+      <button
+        aria-label={`Delete ${task.text}`}
+        onClick={() => dispatch({ type: 'remove', payload: task.id })}
+      >
         delete
       </button>
       <span style={{ marginLeft: 5 }}>{task.date.toLocaleTimeString()}</span>
@@ -238,9 +256,11 @@ function TaskForm({
 
   return (
     <form onSubmit={handleSubmit}>
-      <label htmlFor='new-task' style={{ display: 'block' }}>
-        What needs to be done?
-      </label>
+      <h3>
+        <label htmlFor='new-task' style={{ display: 'block' }}>
+          What needs to be done?
+        </label>
+      </h3>
       <input
         id='new-task'
         ref={inputRef}
@@ -293,6 +313,8 @@ function TaskFilter({
         {Object.values(Filter).map(filterValue => (
           <button
             key={filterValue}
+            aria-pressed={filter === filterValue}
+            aria-label={`Show ${filterValue} tasks`}
             style={{ fontWeight: filter === filterValue ? 'bold' : undefined }}
             onClick={() => onFilterChange(filterValue)}
           >
