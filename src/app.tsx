@@ -20,6 +20,8 @@ import Messenger from './exercises/01-beginner/11-messenger'
 import Clock from './exercises/01-beginner/13-clock'
 import Pokemon from './exercises/02-intermediate/pokemon'
 import GreetingForm from './exercises/01-beginner/01-greeting'
+import Counters from './exercises/01-beginner/14-counters'
+import ProductTable from './exercises/01-beginner/15-product-table'
 
 const conditionalRenderingLinks = [
   { to: '/exercises/conditional-rendering/number-describer', title: 'Number Describer' },
@@ -37,6 +39,7 @@ const completeExercisesLinks = [
 const otherExercisesLinks = [
   { to: '/exercises/beginner/greeting', title: 'Greeting' },
   { to: '/exercises/beginner/toggle', title: 'Toggle' },
+  { to: '/exercises/beginner/counters', title: 'Counters' },
   { to: '/exercises/beginner/clock', title: 'Clock' },
   { to: '/exercises/beginner/color', title: 'Color' },
   { to: '/exercises/beginner/math', title: 'Math' },
@@ -44,6 +47,7 @@ const otherExercisesLinks = [
   { to: '/exercises/beginner/search', title: 'Search' },
   { to: '/exercises/beginner/fruits', title: 'Fruits' },
   { to: '/exercises/beginner/messenger', title: 'Messenger' },
+  { to: '/exercises/beginner/product-table', title: 'Product Table' },
   { to: '/exercises/intermediate/pokemon', title: 'Pokemon' },
 ]
 
@@ -68,7 +72,7 @@ export default function App() {
             <ul className='flex flex-col gap-3 list-none m-0'>
               <li>
                 <span className='font-semibold'>Conditional Rendering</span>
-                <ul>
+                <ul className='list-none'>
                   {conditionalRenderingLinks.map(link => (
                     <li key={link.to}>
                       <NavLink to={link.to}>{link.title}</NavLink>
@@ -79,7 +83,7 @@ export default function App() {
 
               <li>
                 <span className='font-semibold'>Complete Exercises</span>
-                <ul>
+                <ul className='list-none'>
                   {completeExercisesLinks.map(link => (
                     <li key={link.to}>
                       <NavLink to={link.to}>{link.title}</NavLink>
@@ -90,7 +94,7 @@ export default function App() {
 
               <li>
                 <span className='font-semibold'>Other Exercises</span>
-                <ul>
+                <ul className='list-none'>
                   {otherExercisesLinks.map(link => (
                     <li key={link.to}>
                       <NavLink to={link.to}>{link.title}</NavLink>
@@ -123,6 +127,8 @@ export default function App() {
                 <Route path='search' element={<Search />} />
                 <Route path='toggle' element={<Toggle />} />
                 <Route path='greeting' element={<GreetingForm />} />
+                <Route path='counters' element={<Counters />} />
+                <Route path='product-table' element={<ProductTable />} />
               </Route>
 
               <Route path='intermediate'>
