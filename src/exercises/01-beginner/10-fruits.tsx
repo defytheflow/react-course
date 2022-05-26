@@ -2,14 +2,17 @@
 import React from 'react'
 import Button from '../../utils/button'
 
-const allItems = [
+type ItemType = {
+  id: string
+  value: string
+}
+
+const allItems: ItemType[] = [
   { id: 'apple', value: '🍎 apple' },
   { id: 'orange', value: '🍊 orange' },
   { id: 'grape', value: '🍇 grape' },
   { id: 'pear', value: '🍐 pear' },
 ]
-
-type ItemType = typeof allItems[number]
 
 export default function Fruits() {
   const [items, setItems] = React.useState(allItems)

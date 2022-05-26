@@ -178,7 +178,7 @@ function PokemonDataView({ pokemonName }: { pokemonName: string }) {
     ) : status === 'pending' ? (
       <div className='loader'></div>
     ) : (
-      <img src={pokemon!.image} />
+      <img src={pokemon!.image} alt='Pokemon' />
     )
 
   const rows =

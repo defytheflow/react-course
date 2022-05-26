@@ -3,8 +3,7 @@ import React from 'react'
 export default function ToggleApp() {
   return (
     <div style={{ display: 'flex', gap: 50 }}>
-      <LightSwitch initialOn={false} />
-      <HideElement />
+      <LightSwitch initialOn={true} />
       <Light />
     </div>
   )
@@ -22,18 +21,6 @@ function LightSwitch({ initialOn = true }: { initialOn?: boolean }) {
   return (
     <div>
       <button onClick={toggle}>{`Turn ${on ? 'off' : 'on'} the lights`}</button>
-    </div>
-  )
-}
-
-function HideElement() {
-  const [show, setShow] = React.useState(true)
-  const toggle = () => setShow(prevShow => !prevShow)
-
-  return (
-    <div>
-      <button onClick={toggle}>{`${show ? 'Hide' : 'Show'} Element Below`}</button>
-      {show ? <div style={{ marginTop: 5 }}>Element</div> : null}
     </div>
   )
 }

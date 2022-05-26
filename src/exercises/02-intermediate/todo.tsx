@@ -11,7 +11,16 @@ enum Order {
   LATEST = 'latest',
 }
 
-const initialTasks = [
+type TaskType = {
+  id: number
+  text: string
+  done: boolean
+  date: Date
+}
+
+type TaskId = TaskType['id']
+
+const initialTasks: TaskType[] = [
   {
     id: 1,
     text: 'Learn React',
@@ -25,9 +34,6 @@ const initialTasks = [
     date: new Date(),
   },
 ]
-
-type TaskType = typeof initialTasks[number]
-type TaskId = TaskType['id']
 
 type ActionType =
   | { type: 'toggle'; payload: TaskId }
@@ -112,7 +118,6 @@ export default function TodoApp() {
 
   return (
     <div>
-      <h2 style={{ marginTop: 0 }}>Todo</h2>
       <div style={{ display: 'flex', gap: 5 }}>
         <button
           style={{ fontWeight: order === Order.EARLIEST ? 'bold' : undefined }}
@@ -148,14 +153,14 @@ function TaskList({
     <ul>
       {tasks.map(task => (
         <li key={task.id} style={{ marginTop: 10 }}>
-          <Task task={task} dispatch={dispatch} />
+          <TaskItem task={task} dispatch={dispatch} />
         </li>
       ))}
     </ul>
   )
 }
 
-function Task({
+function TaskItem({
   task,
   dispatch,
 }: {
@@ -171,7 +176,7 @@ function Task({
     }
   }, [isEditing])
 
-  const textELement = isEditing ? (
+  const textElement = isEditing ? (
     <input
       ref={inputRef}
       value={task.text}
@@ -180,6 +185,8 @@ function Task({
       }
       onKeyDown={e => e.key === 'Enter' && setIsEditing(!isEditing)}
     />
+  ) : task.done ? (
+    <del>{task.text}</del>
   ) : (
     task.text
   )
@@ -192,7 +199,7 @@ function Task({
           checked={task.done}
           onChange={() => dispatch({ type: 'toggle', payload: task.id })}
         />
-        <span style={{ margin: '0 5px' }}>{textELement}</span>
+        <span style={{ margin: '0 5px' }}>{textElement}</span>
       </label>
       <button style={{ marginRight: 5 }} onClick={() => setIsEditing(!isEditing)}>
         {isEditing ? 'save' : 'edit'}
