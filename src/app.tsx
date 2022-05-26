@@ -1,5 +1,6 @@
 import React from 'react'
 import { NavLink, Route, Routes } from 'react-router-dom'
+import NumberDescriber from './exercises/01-beginner/00-number'
 import Greeting from './exercises/01-beginner/01-greeting'
 import Toggle from './exercises/01-beginner/02-toggle'
 import Color from './exercises/01-beginner/03-color'
@@ -13,7 +14,6 @@ import Clock from './exercises/01-beginner/13-clock'
 import Pokemon from './exercises/02-intermediate/pokemon'
 import Timer from './exercises/02-intermediate/timer'
 import Todo from './exercises/02-intermediate/todo'
-import NumberDescriber from './exercises/01-beginner/00-number'
 
 export default function App() {
   return (
