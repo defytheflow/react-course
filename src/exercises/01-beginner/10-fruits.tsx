@@ -19,9 +19,7 @@ export default function Fruits() {
 
   function addItem() {
     const itemIds = items.map(i => i.id)
-    setItems(prevItems => {
-      return [...prevItems, allItems.find(i => !itemIds.includes(i.id))!]
-    })
+    setItems(prevItems => [...prevItems, allItems.find(i => !itemIds.includes(i.id))!])
   }
 
   function removeItem(item: ItemType) {
