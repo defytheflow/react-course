@@ -4,7 +4,7 @@ import React from 'react'
 export default function Color() {
   const [clicks, setClicks] = React.useState(0)
 
-  function handleChangeColor(e: React.MouseEvent) {
+  function handleChangeColor(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation()
     document.body.style.backgroundColor = getRandomLightColor()
   }

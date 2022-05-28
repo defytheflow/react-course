@@ -23,7 +23,9 @@
     "dev": "npm run start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prepare": "husky install",
+    "fix": "prettier --write \"(src|packages)/**/*.{tsx,ts,json}\""
   },
   "eslintConfig": {
     "extends": [
@@ -46,6 +48,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.7",
     "cross-env": "^7.0.3",
+    "husky": "^8.0.1",
     "postcss": "^8.4.14",
     "tailwindcss": "^3.0.24"
   }

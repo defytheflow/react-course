@@ -1,14 +1,19 @@
 // https://beta.reactjs.org/learn/extracting-state-logic-into-a-reducer
 import React from 'react'
 
-const contacts = [
+type ContactType = Readonly<{
+  id: number
+  name: string
+  email: string
+}>
+
+type ContactId = ContactType['id']
+
+const contacts: ContactType[] = [
   { id: 0, name: 'Taylor', email: 'taylor@mail.com' },
   { id: 1, name: 'Alice', email: 'alice@mail.com' },
   { id: 2, name: 'Bob', email: 'bob@mail.com' },
 ]
-
-type ContactType = typeof contacts[number]
-type ContactId = ContactType['id']
 
 type ActionType =
   | { type: 'select'; payload: ContactId }
@@ -35,7 +40,10 @@ function messengerReducer(
       }
     }
     case 'send': {
-      return { ...state, messages: { ...state.messages, [state.selectedId]: '' } }
+      return {
+        ...state,
+        messages: { ...state.messages, [state.selectedId]: '' },
+      }
     }
   }
 }

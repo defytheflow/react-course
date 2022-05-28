@@ -1,15 +1,15 @@
 import React from 'react'
 
-type Product = {
+type ProductType = Readonly<{
   category: 'Fruits' | 'Vegetables'
   price: string
   stocked: boolean
   name: string
-}
+}>
 
-type ProductCategory = Product['category']
+type ProductCategory = ProductType['category']
 
-const products: Product[] = [
+const products: ProductType[] = [
   { category: 'Fruits', price: '$1', stocked: true, name: 'Apple' },
   { category: 'Fruits', price: '$1', stocked: true, name: 'Dragon Fruit' },
   { category: 'Fruits', price: '$2', stocked: false, name: 'Passion Fruit' },
@@ -73,7 +73,7 @@ function Search({
   )
 }
 
-function Table({ products }: { products: Product[] }) {
+function Table({ products }: { products: ProductType[] }) {
   const rows: JSX.Element[] = []
   let lastCategory: ProductCategory | null = null
 
@@ -106,7 +106,7 @@ function CategoryRow({ category }: { category: ProductCategory }) {
   )
 }
 
-function ProductRow({ product }: { product: Product }) {
+function ProductRow({ product }: { product: ProductType }) {
   const name = product.stocked ? (
     product.name
   ) : (
