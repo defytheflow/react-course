@@ -6,13 +6,15 @@ import NumberDescriber from './exercises/conditional-rendering/number-describer'
 import PackingList from './exercises/conditional-rendering/packing-list'
 import Greeting from './exercises/conditional-rendering/greeting'
 
+import Divs from './exercises/forms/divs'
+import Mathematics from './exercises/forms/math'
+
 import Counter from './exercises/01-beginner/05-counter'
 import Timer from './exercises/02-intermediate/timer'
 import Todo from './exercises/02-intermediate/todo'
 
 import Toggle from './exercises/01-beginner/02-toggle'
 import Color from './exercises/01-beginner/03-color'
-import Mathematics from './exercises/01-beginner/04-math'
 import BuggyCounter from './exercises/01-beginner/06-buggy-counter'
 import Search from './exercises/01-beginner/08-search'
 import Fruits from './exercises/01-beginner/10-fruits'
@@ -22,12 +24,19 @@ import Pokemon from './exercises/02-intermediate/pokemon'
 import GreetingForm from './exercises/01-beginner/01-greeting'
 import Counters from './exercises/01-beginner/14-counters'
 import ProductTable from './exercises/01-beginner/15-product-table'
+import ApplesForm from './exercises/forms/01-apples-form'
 
 const conditionalRenderingLinks = [
   { to: '/exercises/conditional-rendering/number-describer', title: 'Number Describer' },
   { to: '/exercises/conditional-rendering/packing-list', title: 'Packing List' },
   { to: '/exercises/conditional-rendering/greeting', title: 'Greeting' },
   { to: '/exercises/conditional-rendering/hide-element', title: 'Hide Element' },
+]
+
+const formLinks = [
+  { to: '/exercises/forms/divs', title: 'Divs' },
+  { to: '/exercises/forms/math', title: 'Math' },
+  { to: '/exercises/forms/apples-form', title: 'Apples Form' },
 ]
 
 const completeExercisesLinks = [
@@ -42,7 +51,6 @@ const otherExercisesLinks = [
   { to: '/exercises/beginner/counters', title: 'Counters' },
   { to: '/exercises/beginner/clock', title: 'Clock' },
   { to: '/exercises/beginner/color', title: 'Color' },
-  { to: '/exercises/beginner/math', title: 'Math' },
   { to: '/exercises/beginner/buggy-counter', title: 'Buggy Counter' },
   { to: '/exercises/beginner/search', title: 'Search' },
   { to: '/exercises/beginner/fruits', title: 'Fruits' },
@@ -70,38 +78,10 @@ export default function App() {
         <aside>
           <nav>
             <ul className='flex flex-col gap-3 list-none m-0'>
-              <li>
-                <span className='font-semibold'>Conditional Rendering</span>
-                <ul className='list-none'>
-                  {conditionalRenderingLinks.map(link => (
-                    <li key={link.to}>
-                      <NavLink to={link.to}>{link.title}</NavLink>
-                    </li>
-                  ))}
-                </ul>
-              </li>
-
-              <li>
-                <span className='font-semibold'>Complete Exercises</span>
-                <ul className='list-none'>
-                  {completeExercisesLinks.map(link => (
-                    <li key={link.to}>
-                      <NavLink to={link.to}>{link.title}</NavLink>
-                    </li>
-                  ))}
-                </ul>
-              </li>
-
-              <li>
-                <span className='font-semibold'>Other Exercises</span>
-                <ul className='list-none'>
-                  {otherExercisesLinks.map(link => (
-                    <li key={link.to}>
-                      <NavLink to={link.to}>{link.title}</NavLink>
-                    </li>
-                  ))}
-                </ul>
-              </li>
+              <NavList title='Conditional Rendering' links={conditionalRenderingLinks} />
+              <NavList title='Forms' links={formLinks} />
+              <NavList title='Complete Exercises' links={completeExercisesLinks} />
+              <NavList title='Other Exercises' links={otherExercisesLinks} />
             </ul>
           </nav>
         </aside>
@@ -116,13 +96,18 @@ export default function App() {
                 <Route path='packing-list' element={<PackingList />} />
               </Route>
 
+              <Route path='forms'>
+                <Route path='divs' element={<Divs />} />
+                <Route path='math' element={<Mathematics />} />
+                <Route path='apples-form' element={<ApplesForm />} />
+              </Route>
+
               <Route path='beginner'>
                 <Route path='buggy-counter' element={<BuggyCounter />} />
                 <Route path='clock' element={<Clock />} />
                 <Route path='color' element={<Color />} />
                 <Route path='counter' element={<Counter />} />
                 <Route path='fruits' element={<Fruits />} />
-                <Route path='math' element={<Mathematics />} />
                 <Route path='messenger' element={<Messenger />} />
                 <Route path='search' element={<Search />} />
                 <Route path='toggle' element={<Toggle />} />
@@ -141,5 +126,20 @@ export default function App() {
         </main>
       </div>
     </>
+  )
+}
+
+function NavList({ title, links }: { title: string; links: typeof allLinks }) {
+  return (
+    <li>
+      <span className='font-semibold'>{title}</span>
+      <ul className='list-none'>
+        {links.map(link => (
+          <li key={link.to}>
+            <NavLink to={link.to}>{link.title}</NavLink>
+          </li>
+        ))}
+      </ul>
+    </li>
   )
 }

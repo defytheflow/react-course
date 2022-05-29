@@ -11,7 +11,7 @@ import React from 'react'
   through `useState`.
 */
 
-function reducer<S>(prevState: S, newState: React.SetStateAction<S>): S {
+function useStateReducer<S>(prevState: S, newState: React.SetStateAction<S>): S {
   return newState instanceof Function ? newState(prevState) : newState
 }
 
@@ -22,6 +22,18 @@ function initializer<S>(initialState: S | (() => S)): S {
 export function useState<S>(
   initialState: S | (() => S)
 ): [S, React.Dispatch<React.SetStateAction<S>>] {
-  const typedReducer = reducer as React.Reducer<S, React.SetStateAction<S>>
+  const typedReducer = useStateReducer as React.Reducer<S, React.SetStateAction<S>>
+  return React.useReducer(typedReducer, initialState, initializer)
+}
+
+function useLegacyStateReducer<S>(prevState: S, newState: React.SetStateAction<S>): S {
+  return { ...prevState, ...useStateReducer(prevState, newState) }
+}
+
+export function useLegacyState<S>(
+  initialState: S | (() => S)
+): [S, React.Dispatch<React.SetStateAction<Partial<S>>>] {
+  // prettier-ignore
+  const typedReducer = useLegacyStateReducer as React.Reducer<S, React.SetStateAction<Partial<S>>>
   return React.useReducer(typedReducer, initialState, initializer)
 }

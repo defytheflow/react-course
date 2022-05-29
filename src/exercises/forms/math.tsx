@@ -10,7 +10,7 @@ export default function Mathematics() {
   const [result, setResult] = React.useState<number | undefined>()
 
   return (
-    <div>
+    <form>
       <input
         aria-label='First number'
         type='number'
@@ -39,7 +39,7 @@ export default function Mathematics() {
           Calculate
         </button>
       </div>
-    </div>
+    </form>
   )
 }
 
