@@ -8,6 +8,9 @@ import Greeting from './exercises/conditional-rendering/greeting'
 
 import Divs from './exercises/forms/divs'
 import Mathematics from './exercises/forms/math'
+import ApplesForm from './exercises/forms/apples-form'
+
+import Fruits from './exercises/lists/fruits'
 
 import Counter from './exercises/01-beginner/05-counter'
 import Timer from './exercises/02-intermediate/timer'
@@ -17,14 +20,12 @@ import Toggle from './exercises/01-beginner/02-toggle'
 import Color from './exercises/01-beginner/03-color'
 import BuggyCounter from './exercises/01-beginner/06-buggy-counter'
 import Search from './exercises/01-beginner/08-search'
-import Fruits from './exercises/01-beginner/10-fruits'
 import Messenger from './exercises/01-beginner/11-messenger'
 import Clock from './exercises/01-beginner/13-clock'
 import Pokemon from './exercises/02-intermediate/pokemon'
 import GreetingForm from './exercises/01-beginner/01-greeting'
 import Counters from './exercises/01-beginner/14-counters'
 import ProductTable from './exercises/01-beginner/15-product-table'
-import ApplesForm from './exercises/forms/01-apples-form'
 
 const conditionalRenderingLinks = [
   { to: '/exercises/conditional-rendering/number-describer', title: 'Number Describer' },
@@ -38,6 +39,8 @@ const formLinks = [
   { to: '/exercises/forms/math', title: 'Math' },
   { to: '/exercises/forms/apples-form', title: 'Apples Form' },
 ]
+
+const listsLinks = [{ to: '/exercises/lists/fruits', title: 'Fruits' }]
 
 const completeExercisesLinks = [
   { to: '/exercises/beginner/counter', title: 'Counter' },
@@ -53,7 +56,6 @@ const otherExercisesLinks = [
   { to: '/exercises/beginner/color', title: 'Color' },
   { to: '/exercises/beginner/buggy-counter', title: 'Buggy Counter' },
   { to: '/exercises/beginner/search', title: 'Search' },
-  { to: '/exercises/beginner/fruits', title: 'Fruits' },
   { to: '/exercises/beginner/messenger', title: 'Messenger' },
   { to: '/exercises/beginner/product-table', title: 'Product Table' },
   { to: '/exercises/intermediate/pokemon', title: 'Pokemon' },
@@ -80,6 +82,7 @@ export default function App() {
             <ul className='flex flex-col gap-3 list-none m-0'>
               <NavList title='Conditional Rendering' links={conditionalRenderingLinks} />
               <NavList title='Forms' links={formLinks} />
+              <NavList title='Lists' links={listsLinks} />
               <NavList title='Complete Exercises' links={completeExercisesLinks} />
               <NavList title='Other Exercises' links={otherExercisesLinks} />
             </ul>
@@ -102,12 +105,15 @@ export default function App() {
                 <Route path='apples-form' element={<ApplesForm />} />
               </Route>
 
+              <Route path='lists'>
+                <Route path='fruits' element={<Fruits />} />
+              </Route>
+
               <Route path='beginner'>
                 <Route path='buggy-counter' element={<BuggyCounter />} />
                 <Route path='clock' element={<Clock />} />
                 <Route path='color' element={<Color />} />
                 <Route path='counter' element={<Counter />} />
-                <Route path='fruits' element={<Fruits />} />
                 <Route path='messenger' element={<Messenger />} />
                 <Route path='search' element={<Search />} />
                 <Route path='toggle' element={<Toggle />} />

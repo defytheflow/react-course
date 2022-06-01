@@ -22,7 +22,8 @@
 
 8. What are Lifecycle Methods? What methods do you know?
 
-9. What is a Controlled component? What is an Uncontrolled component?
+9. What is a Controlled component? What is an Uncontrolled component? What is the difference?
+   When should you use one or another?
 
 10. What is a `key` prop? Why do we need to include it when creating an array of
     React elements?
