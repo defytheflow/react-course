@@ -1,6 +1,6 @@
 // https://github.com/kentcdodds/react-hooks
 import React from 'react'
-import Button from '../../utils/button'
+import Button from '~/utils/button'
 
 export default function PokemonApp() {
   const [pokemonName, setPokemonName] = React.useState('')

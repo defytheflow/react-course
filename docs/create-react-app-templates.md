@@ -9,3 +9,9 @@
 
 - TypeScript + Redux <br />
   `npx create-react-app my-app --template redux-typescript`
+
+```json
+"scripts": {
+  "start": "cross-env BROWSER=none TSC_COMPILE_ON_ERROR=true react-scripts start",
+}
+```

@@ -1,5 +1,5 @@
 import React from 'react'
-import Button from '../../utils/button'
+import Button from '~/utils/button'
 
 export default function Timer() {
   const [timeLeft, setTimeLeft] = React.useState(0)

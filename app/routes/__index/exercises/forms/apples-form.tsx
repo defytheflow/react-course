@@ -1,6 +1,6 @@
 // https://www.digitalocean.com/community/tutorials/how-to-build-forms-in-react
 import React from 'react'
-import Button from '../../utils/button'
+import Button from '~/utils/button'
 
 type ActionType =
   | { type: 'change'; payload: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> }

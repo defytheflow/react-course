@@ -1,7 +1,6 @@
 // Idea from here: https://github.com/rithmschool/react_exercises/blob/master/03-events-forms-refs-life-cycle/forms-and-refs/readme.md
 import React from 'react'
-
-import Button from '../../utils/button'
+import Button from '~/utils/button'
 
 type DivType = Readonly<{
   width: string

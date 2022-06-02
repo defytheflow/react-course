@@ -1,6 +1,6 @@
 // https://github.com/kentcdodds/react-fundamentals
 import React from 'react'
-import Button from '../../utils/button'
+import Button from '~/utils/button'
 
 type ItemType = Readonly<{
   id: string
