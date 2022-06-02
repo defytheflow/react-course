@@ -1,46 +1,50 @@
-import { NavLink, Outlet, useLocation } from '@remix-run/react'
+import type { LoaderFunction } from '@remix-run/node'
+import { NavLink, Outlet, useLoaderData, useLocation } from '@remix-run/react'
+import fs from 'fs'
 
 type LinkType = Readonly<{ to: string; title: string }>
-type LinksMap = Record<string, LinkType[]>
+type LoaderData = Record<string, LinkType[]>
 
-const links: LinksMap = {
-  conditionalRendering: [
-    {
-      to: '/exercises/conditional-rendering/number-describer',
-      title: 'Number Describer',
-    },
-    { to: '/exercises/conditional-rendering/packing-list', title: 'Packing List' },
-    { to: '/exercises/conditional-rendering/greeting', title: 'Greeting' },
-    { to: '/exercises/conditional-rendering/hide-element', title: 'Hide Element' },
-  ],
-  forms: [
-    { to: '/exercises/forms/divs', title: 'Divs' },
-    { to: '/exercises/forms/math', title: 'Math' },
-    { to: '/exercises/forms/apples-form', title: 'Apples Form' },
-  ],
-  lists: [{ to: '/exercises/lists/fruits', title: 'Fruits' }],
-  completeExercises: [
-    { to: '/exercises/beginner/counter', title: 'Counter' },
-    { to: '/exercises/intermediate/timer', title: 'Timer' },
-    { to: '/exercises/intermediate/todo', title: 'Todo' },
-  ],
-  otherExercises: [
-    { to: '/exercises/beginner/greeting', title: 'Greeting' },
-    { to: '/exercises/beginner/toggle', title: 'Toggle' },
-    { to: '/exercises/beginner/counters', title: 'Counters' },
-    { to: '/exercises/beginner/clock', title: 'Clock' },
-    { to: '/exercises/beginner/color', title: 'Color' },
-    { to: '/exercises/beginner/buggy-counter', title: 'Buggy Counter' },
-    { to: '/exercises/beginner/search', title: 'Search' },
-    { to: '/exercises/beginner/messenger', title: 'Messenger' },
-    { to: '/exercises/beginner/product-table', title: 'Product Table' },
-    { to: '/exercises/intermediate/pokemon', title: 'Pokemon' },
-  ],
+function getFilesRecursive(dir: string, _files: string[] = []) {
+  const files = fs.readdirSync(dir)
+
+  for (const file of files) {
+    const name = dir + '/' + file
+    if (fs.statSync(name).isDirectory()) {
+      getFilesRecursive(name, _files)
+    } else {
+      _files.push(name)
+    }
+  }
+
+  return _files
 }
 
-const allLinks = Object.values(links).flat()
+const capitalize = (s: string) => s[0].toUpperCase() + s.slice(1)
+const makeTitle = (s: string) => s.split('-').map(capitalize).join(' ')
+
+export const loader: LoaderFunction = () => {
+  const pathnames = getFilesRecursive('./app/routes/__index/exercises')
+    .map(s => s.replace(/^.*__index/, ''))
+    .map(s => s.replace(/.tsx/, ''))
+
+  const map: LoaderData = {}
+
+  for (const pathname of pathnames) {
+    const parts = pathname.split('/')
+    const category = makeTitle(parts[2])
+    const name = makeTitle(parts[3])
+    map[category] = map[category] ?? []
+    map[category].push({ to: pathname, title: name })
+  }
+
+  return map
+}
 
 export default function Index() {
+  const linksData = useLoaderData<LoaderData>()
+  const allLinks = Object.values(linksData).flat()
+
   const { pathname } = useLocation()
   const link = allLinks.find(link => link.to === pathname)
 
@@ -54,11 +58,9 @@ export default function Index() {
         <aside>
           <nav>
             <ul className='flex flex-col gap-3 list-none m-0'>
-              <NavList title='Conditional Rendering' links={links.conditionalRendering} />
-              <NavList title='Forms' links={links.forms} />
-              <NavList title='Lists' links={links.lists} />
-              <NavList title='Complete Exercises' links={links.completeExercises} />
-              <NavList title='Other Exercises' links={links.otherExercises} />
+              {Object.entries(linksData).map(([title, links]) => (
+                <NavList key={title} title={title} links={links} />
+              ))}
             </ul>
           </nav>
         </aside>
@@ -71,7 +73,7 @@ export default function Index() {
   )
 }
 
-function NavList({ title, links }: { title: string; links: typeof allLinks }) {
+function NavList({ title, links }: { title: string; links: LinkType[] }) {
   return (
     <li>
       <span className='font-semibold'>{title}</span>
