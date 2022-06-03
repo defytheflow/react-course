@@ -13,6 +13,12 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+  padding: .2em .4em;
+  margin: 0;
+  font-size: 85%;
+  border-radius: 6px;
+  background-color: rgb(58, 65, 75);
+  color: #d7ba7d;
 }
 
 .active {

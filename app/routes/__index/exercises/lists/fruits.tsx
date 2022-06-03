@@ -2,10 +2,7 @@
 import React from 'react'
 import Button from '~/utils/button'
 
-type ItemType = Readonly<{
-  id: string
-  value: string
-}>
+type ItemType = Readonly<{ id: string; value: string }>
 
 const allItems: ItemType[] = [
   { id: 'apple', value: '🍎 apple' },

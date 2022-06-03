@@ -1,6 +1,7 @@
 import type { LoaderFunction } from '@remix-run/node'
 import { NavLink, Outlet, useLoaderData, useLocation } from '@remix-run/react'
 import fs from 'fs'
+import { links } from '~/root'
 
 type LinkType = Readonly<{ to: string; title: string }>
 type LoaderData = Record<string, LinkType[]>
@@ -57,10 +58,26 @@ export default function Index() {
       <div className='flex'>
         <aside>
           <nav>
-            <ul className='flex flex-col gap-3 list-none m-0'>
-              {Object.entries(linksData).map(([title, links]) => (
-                <NavList key={title} title={title} links={links} />
-              ))}
+            <ul>
+              <li>
+                <span className='font-semibold'>Exercises</span>
+                <ul className='flex flex-col gap-3 list-none m-0'>
+                  {Object.entries(linksData).map(([title, links]) => (
+                    <NavList key={title} title={title} links={links} />
+                  ))}
+                </ul>
+              </li>
+              <li>
+                <span className='font-semibold'>Interviews</span>
+                <ul className='list-none'>
+                  <li>
+                    <NavLink to='/interviews/react'>React</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to='/interviews/redux'>Redux</NavLink>
+                  </li>
+                </ul>
+              </li>
             </ul>
           </nav>
         </aside>
