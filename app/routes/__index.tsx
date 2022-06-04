@@ -1,7 +1,11 @@
-import type { LoaderFunction } from '@remix-run/node'
+import type { LoaderFunction, MetaFunction } from '@remix-run/node'
 import { NavLink, Outlet, useLoaderData, useLocation } from '@remix-run/react'
 import fs from 'fs'
-import { links } from '~/root'
+
+export const meta: MetaFunction = ({ location }) => {
+  const name = makeTitle(location.pathname.split('/').at(-1)!)
+  return { title: `React Course - ${name}` }
+}
 
 type LinkType = Readonly<{ to: string; title: string }>
 type LoaderData = Record<string, LinkType[]>
