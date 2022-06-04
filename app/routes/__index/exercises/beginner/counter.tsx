@@ -1,4 +1,5 @@
 import React from 'react'
+import usePrevious from '~/utils/use-previous'
 
 export default function CounterApp() {
   return <Counter initialCount={5} />
@@ -82,14 +83,4 @@ function Counter({
       </div>
     </div>
   )
-}
-
-function usePrevious<T>(value: T): T | null {
-  const valueRef = React.useRef<T | null>(null)
-
-  React.useEffect(() => {
-    valueRef.current = value
-  }, [value])
-
-  return valueRef.current
 }

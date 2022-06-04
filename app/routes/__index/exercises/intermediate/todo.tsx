@@ -1,5 +1,6 @@
 // Many helpful tips were taken from this example: https://github.com/mdn/todo-react
 import React from 'react'
+import usePrevious from '~/utils/use-previous'
 
 type TaskType = Readonly<{
   id: number
@@ -264,13 +265,3 @@ function Task({
 }
 
 const capitalize = (s: string) => s[0].toUpperCase() + s.slice(1)
-
-function usePrevious<T>(value: T): T | null {
-  const valueRef = React.useRef<T | null>(null)
-
-  React.useEffect(() => {
-    valueRef.current = value
-  }, [value])
-
-  return valueRef.current
-}

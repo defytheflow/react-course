@@ -1,6 +1,7 @@
 // https://github.com/kentcdodds/react-fundamentals
 import React from 'react'
 import Button from '~/utils/button'
+import DropDown from '~/utils/dropdown'
 
 type ItemType = Readonly<{ id: string; value: string }>
 
@@ -29,11 +30,17 @@ export default function Fruits() {
         <Button disabled={items.length >= allItems.length} onClick={addItem}>
           add item
         </Button>
-        <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
+        <ul role='list' style={{ listStyle: 'none', paddingLeft: 0 }}>
           {items.map(item => (
+            // Try to use Math.random() as a key. Add some styles on any list item in the
+            // browser, then remove another item, see that the style was lost.
             <li key={item.id}>
               {/* Try removing a key or using index as a key and removing items from the start. */}
-              <button onClick={() => removeItem(item)}>remove</button>{' '}
+              <DropDown
+                ariaLabel={`${item.value} options`}
+                options={[{ label: 'Remove', onClick: () => removeItem(item) }]}
+              />
+              {/* <button onClick={() => removeItem(item)}>Remove</button>{' '} */}
               <label htmlFor={`${item.id}-input`}>{item.value}</label>{' '}
               <input id={`${item.id}-input`} defaultValue={item.value} />
               {/* Or clear the defaultValue and try entering values yourself and then removing items from the start. */}
@@ -83,21 +90,6 @@ function ShuffleFruits() {
     </div>
   )
 }
-
-// TODO: lookup a better way to shuffle an array, that is stable and clear, understand it completely
-
-// function shuffle<T>(array: readonly T[]): T[] {
-//   const newArray = [...array]
-
-//   for (let i = 0, len = newArray.length; i < len; i++) {
-//     const j = Math.floor(Math.random() * (i + 1))
-//     const tmp = newArray[i]
-//     newArray[i] = newArray[j]
-//     newArray[j] = tmp
-//   }
-
-//   return newArray
-// }
 
 function shuffle<T>(array: readonly T[]): T[] {
   const newArray = [...array]
