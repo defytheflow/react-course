@@ -1,18 +1,23 @@
 // Many helpful tips were taken from this example: https://github.com/mdn/todo-react
 import React from 'react'
+import { capitalize } from '~/utils/misc'
 import usePrevious from '~/utils/use-previous'
+
+const availableColors = ['green', 'blue', 'orange', 'purple', 'red'] as const
 
 type TaskType = Readonly<{
   id: number
   text: string
   done: boolean
+  color?: typeof availableColors[number]
 }>
 
 type TaskId = TaskType['id']
+type TaskColor = TaskType['color']
 
 const initialTasks: TaskType[] = [
-  { id: 1, text: 'Learn React', done: true },
-  { id: 2, text: 'Learn Redux', done: false },
+  { id: 1, text: 'Learn React', done: true, color: 'green' },
+  { id: 2, text: 'Learn Redux', done: false, color: 'purple' },
 ]
 
 type ActionType =
@@ -20,6 +25,7 @@ type ActionType =
   | { type: 'remove'; payload: TaskId }
   | { type: 'add'; payload: string }
   | { type: 'edit'; payload: { id: TaskId; text: string } }
+  | { type: 'set_color'; payload: { id: TaskId; color: TaskColor } }
   | { type: 'markAllCompleted' }
   | { type: 'clearCompleted' }
 
@@ -36,8 +42,10 @@ function tasksReducer(
       return state.filter(task => task.id !== action.payload)
     }
     case 'add': {
+      const sortedIds = state.map(task => task.id).sort((a, b) => a - b) // in case tasks get reordered.
+      const prevMaxId = sortedIds[sortedIds.length - 1] ?? 0 // in case no tasks exist.
       const newTask: TaskType = {
-        id: Date.now(),
+        id: prevMaxId + 1,
         text: action.payload,
         done: false,
       }
@@ -46,6 +54,10 @@ function tasksReducer(
     case 'edit': {
       const { id, text } = action.payload
       return state.map(task => (task.id === id ? { ...task, text } : task))
+    }
+    case 'set_color': {
+      const { id, color } = action.payload
+      return state.map(task => (task.id === id ? { ...task, color } : task))
     }
     case 'markAllCompleted': {
       return state.map(task => ({ ...task, done: true }))
@@ -56,59 +68,59 @@ function tasksReducer(
   }
 }
 
-const filters = {
-  all: () => true,
-  active: (task: TaskType) => !task.done,
-  completed: (task: TaskType) => task.done,
+enum StatusFilter {
+  ALL = 'all',
+  ACTIVE = 'active',
+  COMPLETED = 'completed',
 }
 
-type FilterType = keyof typeof filters
-const filterNames = Object.keys(filters) as FilterType[]
+const filterValues = Object.values(StatusFilter)
 
 // Possible other features:
 // - search by name
 // - add new to start / add new to end
-// - color filters
 // - local storage support
+// - normalize data
+// - add tasks reordering somehow.
 export default function TodoApp() {
   const [tasks, dispatch] = React.useReducer(tasksReducer, initialTasks)
-  const [filter, setFilter] = React.useState<FilterType>('all')
+  const [status, setStatus] = React.useState<StatusFilter>(StatusFilter.ALL)
+  const [colors, setColors] = React.useState<TaskColor[]>([])
   const [editedId, setEditedId] = React.useState<TaskId | null>(null)
+
+  let filteredTasks = tasks
+  if (status !== StatusFilter.ALL || colors.length !== 0) {
+    const showCompleted = status === StatusFilter.COMPLETED
+    filteredTasks = tasks.filter(task => {
+      const statusMatches = status === 'all' || task.done === showCompleted
+      const colorMatches = colors.length === 0 || colors.includes(task.color)
+      return statusMatches && colorMatches
+    })
+  }
 
   const tasksRemaining = tasks.length
   const suffix = tasksRemaining === 1 ? '' : 's'
 
-  const filterButtons = filterNames.map(filterName => {
-    const isPressed = filter === filterName
-    return (
-      <button
-        key={filterName}
-        aria-pressed={isPressed}
-        aria-label={`Show ${filterName} tasks`}
-        style={{ fontWeight: isPressed ? 'bold' : undefined }}
-        onClick={() => setFilter(filterName)}
-      >
-        {capitalize(filterName)}
-      </button>
-    )
-  })
-
-  const filteredTasks = tasks
-    .filter(filters[filter])
-    .map(task => (
-      <Task
-        key={task.id}
-        task={task}
-        dispatch={dispatch}
-        isEditing={task.id === editedId}
-        onEditChange={isEdited => setEditedId(isEdited ? task.id : null)}
-      />
-    ))
-
   return (
     <div>
       <TaskForm tasks={tasks} dispatch={dispatch} />
-      <div style={{ display: 'flex', gap: 5, marginTop: 10 }}>{filterButtons}</div>
+      <div style={{ display: 'flex', gap: 5, marginTop: 10 }}>
+        {filterValues.map(filterValue => {
+          const isActive = status === filterValue
+          return (
+            <button
+              key={filterValue}
+              aria-pressed={isActive}
+              aria-label={`Show ${filterValue} tasks`}
+              style={{ fontWeight: isActive ? 'bold' : undefined }}
+              onClick={() => setStatus(filterValue)}
+            >
+              {capitalize(filterValue)}
+            </button>
+          )
+        })}
+      </div>
+
       <h3 id='list-heading'>{`${tasksRemaining} task${suffix} remaining`}</h3>
       {/* List heading is not announced on google chrome screen reader without an explicit role. */}
       {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
@@ -117,8 +129,17 @@ export default function TodoApp() {
         aria-labelledby='list-heading'
         style={{ padding: 0, listStyle: 'none' }}
       >
-        {filteredTasks}
+        {filteredTasks.map(task => (
+          <Task
+            key={task.id}
+            task={task}
+            dispatch={dispatch}
+            isEditing={task.id === editedId}
+            onEditChange={isEdited => setEditedId(isEdited ? task.id : null)}
+          />
+        ))}
       </ul>
+
       <h3 id='actions-heading'>Actions</h3>
       <div
         role='group'
@@ -138,6 +159,36 @@ export default function TodoApp() {
           Clear Completed
         </button>
       </div>
+
+      <div>
+        <h3 id='filter-by-color-heading'>Filter By Color</h3>
+        <form
+          aria-labelledby='filter-by-color-heading'
+          style={{ display: 'flex', flexDirection: 'row', gap: 5 }}
+        >
+          {availableColors.map(color => (
+            <label key={color}>
+              <input
+                type='checkbox'
+                checked={colors.includes(color)}
+                // prettier-ignore
+                onChange={e => setColors(prevColors => e.target.checked ? [...prevColors, color] : prevColors.filter(c => c !== color))}
+              />
+              <span
+                style={{
+                  backgroundColor: color,
+                  display: 'inline-block',
+                  width: 20,
+                  height: 12,
+                  borderRadius: 3,
+                  margin: '0 5px',
+                }}
+              ></span>
+              {capitalize(color)}
+            </label>
+          ))}
+        </form>
+      </div>
     </div>
   )
 }
@@ -154,11 +205,15 @@ function TaskForm({
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (text.length === 0) {
+
+    const cleanText = text.trim()
+    if (cleanText.length === 0) {
       return
     }
-    dispatch({ type: 'add', payload: text })
+
+    dispatch({ type: 'add', payload: cleanText })
     setText('')
+
     // Form doesn't focus the input if submit was triggered by a button click.
     inputRef.current?.focus()
   }
@@ -243,10 +298,27 @@ function Task({
             {task.done ? <del>{task.text}</del> : task.text}
           </span>
         </label>
+        <select
+          value={task.color}
+          style={{ color: task.color, fontWeight: 700 }}
+          onChange={e =>
+            dispatch({
+              type: 'set_color',
+              payload: { id: task.id, color: e.target.value as TaskColor },
+            })
+          }
+        >
+          <option value=''></option>
+          {availableColors.map(color => (
+            <option key={color} value={color} style={{ color }}>
+              {capitalize(color)}
+            </option>
+          ))}
+        </select>
         <button
           ref={editButtonRef}
           aria-label={`Edit ${task.text}`}
-          style={{ marginRight: 5 }}
+          style={{ margin: '0 5px' }}
           onClick={() => onEditChange(true)}
         >
           Edit
@@ -263,5 +335,3 @@ function Task({
 
   return <li style={{ marginTop: 10 }}>{element}</li>
 }
-
-const capitalize = (s: string) => s[0].toUpperCase() + s.slice(1)
