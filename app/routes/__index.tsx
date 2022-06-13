@@ -1,14 +1,21 @@
+import React from 'react'
 import type { LoaderFunction, MetaFunction } from '@remix-run/node'
 import { NavLink, Outlet, useLoaderData, useLocation } from '@remix-run/react'
 import fs from 'fs'
+import { capitalize } from '~/utils/misc'
+import useToggle from '~/utils/use-toggle'
 
 export const meta: MetaFunction = ({ location }) => {
-  const name = makeTitle(location.pathname.split('/').at(-1)!)
+  const { length, [length - 1]: lastPathnameSegment } = location.pathname.split('/')
+  const name = makeTitle(lastPathnameSegment ?? '')
   return { title: `React Course - ${name}` }
 }
 
 type LinkType = Readonly<{ to: string; title: string }>
-type LoaderData = Record<string, LinkType[]>
+type LoaderData = {
+  initialAsideOpen: 'true' | 'false'
+  linksData: Record<string, LinkType[]>
+}
 
 function getFilesRecursive(dir: string, _files: string[] = []) {
   const files = fs.readdirSync(dir)
@@ -25,15 +32,39 @@ function getFilesRecursive(dir: string, _files: string[] = []) {
   return _files
 }
 
-const capitalize = (s: string) => s[0].toUpperCase() + s.slice(1)
 const makeTitle = (s: string) => s.split('-').map(capitalize).join(' ')
 
-export const loader: LoaderFunction = () => {
+const ASIDE_COOKIE = 'aside_open'
+
+// https://stackoverflow.com/a/3409200
+function parseCookies(request: Request) {
+  const cookies: Record<string, string> = {}
+  const cookieHeader = request.headers.get('cookie')
+
+  if (cookieHeader === null) {
+    return cookies
+  }
+
+  for (const cookie of cookieHeader.split(';')) {
+    let [name, ...rest] = cookie.split(`=`)
+    name = name?.trim()
+    if (!name) continue
+    const value = rest.join(`=`).trim()
+    if (!value) continue
+    cookies[name] = decodeURIComponent(value)
+  }
+
+  return cookies
+}
+
+export const loader: LoaderFunction = ({ request }) => {
+  const cookies = parseCookies(request)
+
   const pathnames = getFilesRecursive('./app/routes/__index/exercises')
     .map(s => s.replace(/^.*__index/, ''))
     .map(s => s.replace(/.tsx/, ''))
 
-  const map: LoaderData = {}
+  const map: LoaderData['linksData'] = {}
 
   for (const pathname of pathnames) {
     const parts = pathname.split('/')
@@ -43,15 +74,25 @@ export const loader: LoaderFunction = () => {
     map[category].push({ to: pathname, title: name })
   }
 
-  return map
+  const data: LoaderData = {
+    initialAsideOpen: cookies[ASIDE_COOKIE] as LoaderData['initialAsideOpen'],
+    linksData: map,
+  }
+
+  return data
 }
 
 export default function Index() {
-  const linksData = useLoaderData<LoaderData>()
+  const { initialAsideOpen, linksData } = useLoaderData<LoaderData>()
   const allLinks = Object.values(linksData).flat()
 
   const { pathname } = useLocation()
   const link = allLinks.find(link => link.to === pathname)
+  const [isAsideOpen, toggleAside] = useToggle(initialAsideOpen === 'true')
+
+  React.useEffect(() => {
+    document.cookie = `${ASIDE_COOKIE}=${isAsideOpen}; SameSite=Lax;`
+  }, [isAsideOpen])
 
   return (
     <>
@@ -59,32 +100,37 @@ export default function Index() {
         {link && <h1 className='text-center'>{link.title}</h1>}
       </nav>
 
+      <button aria-haspopup onClick={toggleAside}>
+        {isAsideOpen ? 'Hide' : 'Show'} menu
+      </button>
       <div className='flex'>
-        <aside>
-          <nav>
-            <ul>
-              <li>
-                <span className='font-semibold'>Exercises</span>
-                <ul className='flex flex-col gap-3 list-none m-0'>
-                  {Object.entries(linksData).map(([title, links]) => (
-                    <NavList key={title} title={title} links={links} />
-                  ))}
-                </ul>
-              </li>
-              <li>
-                <span className='font-semibold'>Interviews</span>
-                <ul className='list-none'>
-                  <li>
-                    <NavLink to='/interviews/react'>React</NavLink>
-                  </li>
-                  <li>
-                    <NavLink to='/interviews/redux'>Redux</NavLink>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </nav>
-        </aside>
+        {isAsideOpen && (
+          <aside>
+            <nav>
+              <ul>
+                <li>
+                  <span className='font-semibold'>Exercises</span>
+                  <ul className='flex flex-col gap-3 list-none m-0'>
+                    {Object.entries(linksData).map(([title, links]) => (
+                      <NavList key={title} title={title} links={links} />
+                    ))}
+                  </ul>
+                </li>
+                <li>
+                  <span className='font-semibold'>Interviews</span>
+                  <ul className='list-none'>
+                    <li>
+                      <NavLink to='/interviews/react'>React</NavLink>
+                    </li>
+                    <li>
+                      <NavLink to='/interviews/redux'>Redux</NavLink>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </nav>
+          </aside>
+        )}
 
         <main className='flex justify-center flex-grow'>
           <Outlet />

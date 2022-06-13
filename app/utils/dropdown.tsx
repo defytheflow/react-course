@@ -64,7 +64,7 @@ export default function DropDown({
       <button
         ref={toggleButtonRef}
         aria-label={ariaLabel}
-        aria-haspopup={true}
+        aria-haspopup
         // aria-controls={`dropdown-list-${id}`}
         onClick={handleClick}
       >
