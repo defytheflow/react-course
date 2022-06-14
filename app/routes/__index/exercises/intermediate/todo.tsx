@@ -325,6 +325,7 @@ function Task({
         <select
           value={task.color}
           style={{ color: task.color, fontWeight: 700 }}
+          aria-label={`Select color for ${task.text}`}
           onChange={e =>
             dispatch({
               type: 'set_color',
