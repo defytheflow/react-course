@@ -1,4 +1,7 @@
-// Many helpful tips were taken from this example: https://github.com/mdn/todo-react
+// Many helpful tips were taken from these examples:
+// https://github.com/mdn/todo-react
+// https://redux.js.org/tutorials/fundamentals/part-5-ui-react
+
 import React from 'react'
 import { capitalize } from '~/utils/misc'
 import usePrevious from '~/utils/use-previous'
@@ -10,14 +13,15 @@ type TaskType = Readonly<{
   text: string
   done: boolean
   color?: typeof availableColors[number]
+  createdAt: Date
 }>
 
 type TaskId = TaskType['id']
 type TaskColor = TaskType['color']
 
 const initialTasks: TaskType[] = [
-  { id: 1, text: 'Learn React', done: true, color: 'green' },
-  { id: 2, text: 'Learn Redux', done: false, color: 'purple' },
+  { id: 1, text: 'Learn React', done: true, color: 'green', createdAt: new Date() },
+  { id: 2, text: 'Learn Redux', done: false, color: 'purple', createdAt: new Date() },
 ]
 
 type ActionType =
@@ -48,6 +52,7 @@ function tasksReducer(
         id: prevMaxId + 1,
         text: action.payload,
         done: false,
+        createdAt: new Date(),
       }
       return state.concat(newTask)
     }
@@ -77,7 +82,6 @@ enum StatusFilter {
 const filterValues = Object.values(StatusFilter)
 
 // Possible other features:
-// - search by name
 // - add new to start / add new to end
 // - local storage support
 // - normalize data
@@ -86,19 +90,23 @@ export default function TodoApp() {
   const [tasks, dispatch] = React.useReducer(tasksReducer, initialTasks)
   const [status, setStatus] = React.useState<StatusFilter>(StatusFilter.ALL)
   const [colors, setColors] = React.useState<TaskColor[]>([])
+  const [search, setSearch] = React.useState('')
   const [editedId, setEditedId] = React.useState<TaskId | null>(null)
 
+  const cleanSearch = search.trim().toLowerCase()
   let filteredTasks = tasks
-  if (status !== StatusFilter.ALL || colors.length !== 0) {
+  if (status !== StatusFilter.ALL || colors.length !== 0 || cleanSearch.length !== 0) {
     const showCompleted = status === StatusFilter.COMPLETED
     filteredTasks = tasks.filter(task => {
       const statusMatches = status === 'all' || task.done === showCompleted
       const colorMatches = colors.length === 0 || colors.includes(task.color)
-      return statusMatches && colorMatches
+      const searchMatches =
+        cleanSearch.length === 0 || task.text.toLowerCase().includes(cleanSearch)
+      return statusMatches && colorMatches && searchMatches
     })
   }
 
-  const tasksRemaining = tasks.length
+  const tasksRemaining = filteredTasks.length
   const suffix = tasksRemaining === 1 ? '' : 's'
 
   return (
@@ -122,6 +130,15 @@ export default function TodoApp() {
       </div>
 
       <h3 id='list-heading'>{`${tasksRemaining} task${suffix} remaining`}</h3>
+      <div style={{ marginTop: 10 }}>
+        <input
+          type='search'
+          placeholder='Search...'
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+
       {/* List heading is not announced on google chrome screen reader without an explicit role. */}
       {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
       <ul
@@ -205,9 +222,10 @@ function TaskForm({
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-
     const cleanText = text.trim()
+
     if (cleanText.length === 0) {
+      inputRef.current?.focus()
       return
     }
 
@@ -263,25 +281,31 @@ function Task({
   let element
 
   if (isEditing) {
+    function handleSubmit(e: React.FormEvent) {
+      e.preventDefault()
+      const text = editInputRef.current?.value?.trim() as string
+
+      if (text.length === 0) {
+        editInputRef.current?.focus()
+        return
+      }
+
+      dispatch({ type: 'edit', payload: { id: task.id, text } })
+      onEditChange(false)
+    }
+
     element = (
-      <form onSubmit={e => e.preventDefault()}>
-        <input
-          ref={editInputRef}
-          value={task.text}
-          onChange={e =>
-            dispatch({
-              type: 'edit',
-              payload: { id: task.id, text: e.target.value },
-            })
-          }
-        />
-        <button
-          type='submit'
-          aria-label={`Save ${task.text}`}
-          onClick={() => onEditChange(false)}
-          style={{ marginLeft: 5 }}
-        >
+      <form onSubmit={handleSubmit}>
+        <input ref={editInputRef} defaultValue={task.text} />
+        <button type='submit' aria-label={`Save ${task.text}`} style={{ marginLeft: 5 }}>
           Save
+        </button>
+        <button
+          type='button'
+          style={{ marginLeft: 5 }}
+          onClick={() => onEditChange(false)}
+        >
+          Cancel
         </button>
       </form>
     )
@@ -318,20 +342,35 @@ function Task({
         <button
           ref={editButtonRef}
           aria-label={`Edit ${task.text}`}
-          style={{ margin: '0 5px' }}
+          style={{ marginLeft: 5 }}
           onClick={() => onEditChange(true)}
         >
           Edit
         </button>
         <button
           aria-label={`Delete ${task.text}`}
+          style={{ marginLeft: 5 }}
           onClick={() => dispatch({ type: 'remove', payload: task.id })}
         >
           Delete
         </button>
+        <small>
+          <time
+            dateTime={task.createdAt.toISOString().replace(/\..*/, '')}
+            style={{ marginLeft: 10 }}
+          >
+            {formatDate(task.createdAt)}
+          </time>
+        </small>
       </div>
     )
   }
 
   return <li style={{ marginTop: 10 }}>{element}</li>
+}
+
+function formatDate(date: Date) {
+  const timeString = date.toLocaleTimeString(['ru'])
+  const dateString = date.toLocaleDateString(['ru'])
+  return `${timeString}, ${dateString}`
 }

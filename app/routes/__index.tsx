@@ -88,7 +88,7 @@ export default function Index() {
 
   const { pathname } = useLocation()
   const link = allLinks.find(link => link.to === pathname)
-  const [isAsideOpen, toggleAside] = useToggle(initialAsideOpen === 'true')
+  const [isAsideOpen, toggleAside] = useToggle(initialAsideOpen !== 'false')
 
   React.useEffect(() => {
     document.cookie = `${ASIDE_COOKIE}=${isAsideOpen}; SameSite=Lax;`
