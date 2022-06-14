@@ -54,6 +54,22 @@
 
 14. How to style a React Component?
 
+    - inline styles
+    - class name
+    - simple css file
+    - css module
+    - css in js
+    - styled components
+
+15. What can be rendered by React? What can you return from a function component? What is
+    a valid return, that react knows how to render?
+    - string
+    - number
+    - boolean
+    - null
+    - undefined
+    - react element
+
 ---
 
 ## Intermediate
@@ -114,3 +130,7 @@
 6. What are custom hooks?
 
 7. How does React associate hook calls with components?
+
+---
+
+## React Router

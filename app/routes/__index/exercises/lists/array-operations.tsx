@@ -205,3 +205,70 @@ function useArray<T>(initialValue: T[] | (() => T[])): [T[], UseArrayFunctions<T
 
   return [array, stableArrayFunctions]
 }
+
+function ArrayOperationsTemplate() {
+  const array = [1, 2, 3, 4, 5, 6]
+  const todo = () => {}
+
+  return (
+    <div>
+      <div style={{ textAlign: 'center', marginBottom: 5 }}>
+        {'[' + array.join(', ') + ']'}
+      </div>
+      <button onClick={todo}>Reset</button>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 250px)', gap: 50 }}>
+        <section style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+          <h3>Insert</h3>
+          <button onClick={todo}>Add 7 to End</button>
+          <button onClick={todo}>Add 7, 8 to End</button>
+          <button onClick={todo}>Add 5 to Start</button>
+          <button onClick={todo}>Add 10, 11 to Start</button>
+          <button onClick={todo}>Insert 5 as third element</button>
+          <button onClick={todo}>
+            <i>Insert 5 as third element*</i>
+          </button>
+          <button onClick={todo}>Insert 12, 13, 14 after third element</button>
+        </section>
+
+        <section style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+          <h3>Remove</h3>
+          <button onClick={todo}>Remove last element</button>
+          <button onClick={todo}>Remove first element</button>
+          <button onClick={todo}>Remove second element</button>
+          <button onClick={todo}>
+            <i>Remove second element*</i>
+          </button>
+          <button onClick={todo}>Remove first three elements</button>
+          <button onClick={todo}>Remove all</button>
+          <button onClick={todo}>
+            <i>Remove all*</i>
+          </button>
+          <button onClick={todo}>Remove odd</button>
+        </section>
+
+        <section style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+          <h3>Update</h3>
+          <button onClick={todo}>Change third element to 9</button>
+          <button onClick={todo}>
+            <i>Change third element to 9*</i>
+          </button>
+          <button onClick={todo}>Change last two elements to 15, 16</button>
+          <button onClick={todo}>Double each element</button>
+          <button onClick={todo}>Set to 1, 2</button>
+        </section>
+
+        <section style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+          <h3>Fill</h3>
+          <button onClick={todo}>Change every value to 0</button>
+          <button onClick={todo}>Change every value to 10 from 3 element</button>
+          <button onClick={todo}>Change every value to 20 before fourth element</button>
+          <button onClick={todo}>
+            Change every value to 12 from 3 element to 5 element
+          </button>
+          <button onClick={todo}>Change last 5 elements to 7</button>
+          <button onClick={todo}>Change every element before last one to 5</button>
+        </section>
+      </div>
+    </div>
+  )
+}
