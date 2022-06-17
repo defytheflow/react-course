@@ -109,6 +109,18 @@ export default function TodoApp() {
   const tasksRemaining = filteredTasks.length
   const suffix = tasksRemaining === 1 ? '' : 's'
 
+  const { activeTasks, completedTasks } = tasks.reduce(
+    (obj, task) => {
+      if (task.done) {
+        obj.completedTasks++
+      } else {
+        obj.activeTasks++
+      }
+      return obj
+    },
+    { activeTasks: 0, completedTasks: 0 }
+  )
+
   return (
     <div>
       <TaskForm tasks={tasks} dispatch={dispatch} />
@@ -147,7 +159,7 @@ export default function TodoApp() {
         style={{ padding: 0, listStyle: 'none' }}
       >
         {filteredTasks.map(task => (
-          <Task
+          <TaskItem
             key={task.id}
             task={task}
             dispatch={dispatch}
@@ -156,6 +168,10 @@ export default function TodoApp() {
           />
         ))}
       </ul>
+
+      <small>
+        {`Total: ${tasks.length}, Active: ${activeTasks}, Completed: ${completedTasks}`}
+      </small>
 
       <h3 id='actions-heading'>Actions</h3>
       <div
@@ -255,7 +271,7 @@ function TaskForm({
   )
 }
 
-function Task({
+function TaskItem({
   task,
   dispatch,
   isEditing,
@@ -355,12 +371,14 @@ function Task({
         >
           Delete
         </button>
+        {/* Remix Hydration Issue If Time Is Displayed */}
         <small>
           <time
-            dateTime={task.createdAt.toISOString().replace(/\..*/, '')}
+            // dateTime={task.createdAt.toISOString().replace(/\..*/, '')}
             style={{ marginLeft: 10 }}
           >
-            {formatDate(task.createdAt)}
+            {/* {formatDate(task.createdAt)} */}
+            {task.createdAt.toLocaleDateString(['ru'])}
           </time>
         </small>
       </div>
@@ -374,4 +392,34 @@ function formatDate(date: Date) {
   const timeString = date.toLocaleTimeString(['ru'])
   const dateString = date.toLocaleDateString(['ru'])
   return `${timeString}, ${dateString}`
+}
+
+function Template() {
+  return `
+    ### - h3
+    *text* - bold text
+    [text] - button
+    (Text....) - text input
+    (^) - checkbox input
+    [text V] - select
+
+    ### What needs to be done?
+    (                    ) [Add #3]
+    [*All*] [Active] [Completed]
+
+    2 tasks remaining
+    (Search...    )
+
+    (^) Learn React [ Green v ] [Edit] [Delete] 20:15:28, 16.06.2022
+    ( ) Learn Redux [ Purple v] [Edit*] [Delete] 20:20:28, 16.06.2022
+    *(Learn Redux|) [Save] [Cancel]
+
+    Total: 2, Active: 1, Completed: 1
+
+    ### Actions
+    [Mark all Completed] [Clear Completed]
+
+    ### Filter By Color
+    () Green () Blue () Orange () Purple () Red
+  `
 }
