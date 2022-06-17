@@ -1,7 +1,11 @@
 module.exports = {
   content: ['./app/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      gridTemplateColumns: {
+        layout: '1fr 3fr',
+      },
+    },
   },
   plugins: [],
 }

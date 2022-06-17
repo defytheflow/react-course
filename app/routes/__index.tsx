@@ -1,9 +1,10 @@
-import React from 'react'
 import type { LoaderFunction, MetaFunction } from '@remix-run/node'
 import { NavLink, Outlet, useLoaderData, useLocation } from '@remix-run/react'
 import fs from 'fs'
+import React from 'react'
 import { capitalize } from '~/utils/misc'
 import useToggle from '~/utils/use-toggle'
+import cn from 'classnames'
 
 export const meta: MetaFunction = ({ location }) => {
   const { length, [length - 1]: lastPathnameSegment } = location.pathname.split('/')
@@ -91,60 +92,51 @@ export default function Index() {
   const [isAsideOpen, toggleAside] = useToggle(initialAsideOpen !== 'false')
 
   React.useEffect(() => {
-    document.cookie = `${ASIDE_COOKIE}=${isAsideOpen}; SameSite=Lax;`
+    document.cookie = `${ASIDE_COOKIE}=${isAsideOpen}; SameSite=Lax; path=/`
   }, [isAsideOpen])
 
   return (
-    <>
-      <nav className='my-4 h-10'>
-        {link && <h1 className='text-center'>{link.title}</h1>}
-      </nav>
-
-      <button aria-haspopup onClick={toggleAside}>
-        {isAsideOpen ? 'Hide' : 'Show'} menu
-      </button>
-      <div className='flex'>
-        {isAsideOpen && (
-          <aside>
-            <nav>
-              <ul>
-                <li>
-                  <span className='font-semibold'>Exercises</span>
-                  <ul className='flex flex-col gap-3 list-none m-0'>
-                    {Object.entries(linksData).map(([title, links]) => (
-                      <NavList key={title} title={title} links={links} />
-                    ))}
-                  </ul>
-                </li>
-                <li>
-                  <span className='font-semibold'>Interviews</span>
-                  <ul className='list-none'>
-                    <li>
-                      <NavLink to='/interviews/react'>React</NavLink>
-                    </li>
-                    <li>
-                      <NavLink to='/interviews/redux'>Redux</NavLink>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </nav>
-          </aside>
+    <div className='h-screen flex flex-col'>
+      <header className='py-4 h-10 bg-[#639] text-white relative'>
+        <h1 className='m-0 text-center'>{link ? link.title : 'React Course ★'}</h1>
+        <button
+          aria-haspopup
+          onClick={toggleAside}
+          className='absolute top-1/2 ml-6'
+          style={{ transform: 'translateY(-50%)' }}
+        >
+          {`${isAsideOpen ? 'Hide' : 'Show'} menu`}
+        </button>
+      </header>
+      <div
+        className={cn(
+          'grid',
+          isAsideOpen ? 'grid-cols-layout' : 'grid-cols-1',
+          'flex-grow'
         )}
-
-        <main className='flex justify-center flex-grow'>
+      >
+        {isAsideOpen && (
+          <nav className='bg-[#ececec] max-w-xs'>
+            <ul className='p-0 px-6 mt-4 flex flex-col gap-3 list-none m-0'>
+              {Object.entries(linksData).map(([title, links]) => (
+                <NavItem key={title} title={title} links={links} />
+              ))}
+            </ul>
+          </nav>
+        )}
+        <main className='flex justify-center flex-grow px-6 pt-6'>
           <Outlet />
         </main>
       </div>
-    </>
+    </div>
   )
 }
 
-function NavList({ title, links }: { title: string; links: LinkType[] }) {
+function NavItem({ title, links }: { title: string; links: LinkType[] }) {
   return (
     <li>
-      <span className='font-semibold'>{title}</span>
-      <ul className='list-none'>
+      <h3 className='mt-0 mb-2'>{title}</h3>
+      <ul className='p-0 list-inside leading-6'>
         {links.map(link => (
           <li key={link.to}>
             <NavLink to={link.to}>{link.title}</NavLink>
