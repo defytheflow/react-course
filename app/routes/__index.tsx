@@ -1,4 +1,4 @@
-import type { LoaderFunction, MetaFunction } from "@remix-run/node";
+import type { LoaderArgs, MetaFunction } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import clsx from "clsx";
 import fs from "fs";
@@ -60,7 +60,7 @@ function parseCookies(request: Request) {
   return cookies;
 }
 
-export const loader: LoaderFunction = ({ request }) => {
+export function loader({ request }: LoaderArgs) {
   const cookies = parseCookies(request);
 
   const pathnames = getFilesRecursive("./app/routes/__index/exercises")
@@ -77,16 +77,14 @@ export const loader: LoaderFunction = ({ request }) => {
     map[category].push({ to: pathname, title: name });
   }
 
-  const data: LoaderData = {
-    initialAsideOpen: cookies[ASIDE_COOKIE] as LoaderData["initialAsideOpen"],
+  return {
+    initialAsideOpen: cookies[ASIDE_COOKIE],
     linksData: map,
   };
-
-  return data;
-};
+}
 
 export default function Index() {
-  const { initialAsideOpen, linksData } = useLoaderData<LoaderData>();
+  const { initialAsideOpen, linksData } = useLoaderData<typeof loader>();
   const allLinks = Object.values(linksData).flat();
 
   const { pathname } = useLocation();

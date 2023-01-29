@@ -1,0 +1,38 @@
+table tbody tr:nth-child(odd) {
+  background-color: #ddd;
+}
+
+th {
+  position: relative;
+  border-bottom: thin solid #888;
+}
+
+th button {
+  width: 100%;
+  text-align: left;
+  background-color: transparent;
+  border: none;
+  font-weight: bold;
+  font-size: 100%;
+  padding: 4px;
+  cursor: pointer;
+  outline: none;
+}
+
+.sort-indicator {
+  position: absolute;
+  right: 0;
+  display: none;
+}
+
+th button:focus .sort-indicator,
+th button:hover .sort-indicator {
+  display: inline;
+}
+
+th button:focus,
+th button:hover {
+  border: 2px solid #007aff;
+  padding: 2px;
+  background-color: #e5f4ff;
+}
