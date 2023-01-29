@@ -1,54 +1,54 @@
-import React from 'react'
+import React from "react";
 
-type SquareValue = 'X' | 'O' | null
+type SquareValue = "X" | "O" | null;
 
 const initialHistory: Array<{ squares: SquareValue[] }> = [
   { squares: Array(9).fill(null) },
-]
+];
 
 export default function Game() {
-  const [history, setHistory] = React.useState(initialHistory)
-  const [currentStep, setCurrentStep] = React.useState(0)
+  const [history, setHistory] = React.useState(initialHistory);
+  const [currentStep, setCurrentStep] = React.useState(0);
 
   function handleClick(i: number) {
-    const newHistory = history.slice(0, currentStep + 1)
-    const current = history[history.length - 1]
-    const squares = current.squares.slice()
+    const newHistory = history.slice(0, currentStep + 1);
+    const current = history[history.length - 1];
+    const squares = current.squares.slice();
 
     if (squares[i] || calculateWinner(squares)[0]) {
-      return
+      return;
     }
-    squares[i] = calculateNext(squares)
+    squares[i] = calculateNext(squares);
 
-    setHistory(newHistory.concat({ squares }))
-    setCurrentStep(newHistory.length)
+    setHistory(newHistory.concat({ squares }));
+    setCurrentStep(newHistory.length);
   }
 
   function restart() {
-    setHistory(initialHistory)
-    setCurrentStep(0)
+    setHistory(initialHistory);
+    setCurrentStep(0);
   }
 
   function jump(i: number) {
-    setCurrentStep(i)
+    setCurrentStep(i);
   }
 
-  const current = history[currentStep]
-  const next = calculateNext(current.squares)
-  const [winner, winnerRow] = calculateWinner(current.squares)
-  const status = calculateStatus(winner, current.squares, next)
+  const current = history[currentStep];
+  const next = calculateNext(current.squares);
+  const [winner, winnerRow] = calculateWinner(current.squares);
+  const status = calculateStatus(winner, current.squares, next);
 
   const moves = history.map((step, i) => {
-    const label = i ? 'Go to move #' + (i + 1) : 'Go to game start'
-    const isCurrentStep = currentStep === i
+    const label = i ? "Go to move #" + (i + 1) : "Go to game start";
+    const isCurrentStep = currentStep === i;
     return (
       <li key={i}>
         <button disabled={isCurrentStep} onClick={() => jump(i)}>
-          {label} {isCurrentStep ? '(current)' : null}
+          {label} {isCurrentStep ? "(current)" : null}
         </button>
       </li>
-    )
-  })
+    );
+  });
 
   return (
     <div>
@@ -63,7 +63,7 @@ export default function Game() {
         Restart
       </button>
     </div>
-  )
+  );
 }
 
 function Board({
@@ -71,17 +71,17 @@ function Board({
   winnerRow,
   onClick,
 }: {
-  squares: SquareValue[]
-  winnerRow: number[]
-  onClick: (i: number) => void
+  squares: SquareValue[];
+  winnerRow: number[];
+  onClick: (i: number) => void;
 }) {
   return (
     <div
-      className='board'
+      className="board"
       style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 50px)',
-        gridTemplateRows: 'repeat(3, 50px)',
+        display: "grid",
+        gridTemplateColumns: "repeat(3, 50px)",
+        gridTemplateRows: "repeat(3, 50px)",
         gap: 1,
       }}
     >
@@ -94,7 +94,7 @@ function Board({
         />
       ))}
     </div>
-  )
+  );
 }
 
 function Square({
@@ -102,15 +102,15 @@ function Square({
   isWinner,
   onClick,
 }: {
-  value: SquareValue
-  isWinner: boolean
-  onClick: () => void
+  value: SquareValue;
+  isWinner: boolean;
+  onClick: () => void;
 }) {
   return (
-    <button className={isWinner ? 'square-winner ' : undefined} onClick={onClick}>
+    <button className={isWinner ? "square-winner " : undefined} onClick={onClick}>
       {value}
     </button>
-  )
+  );
 }
 
 function calculateWinner(squares: SquareValue[]): [SquareValue, number[]] {
@@ -123,17 +123,17 @@ function calculateWinner(squares: SquareValue[]): [SquareValue, number[]] {
     [2, 5, 8],
     [0, 4, 8],
     [2, 4, 6],
-  ]
+  ];
 
   for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i]
+    const [a, b, c] = lines[i];
 
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return [squares[a], lines[i]]
+      return [squares[a], lines[i]];
     }
   }
 
-  return [null, []]
+  return [null, []];
 }
 
 function calculateStatus(
@@ -144,10 +144,10 @@ function calculateStatus(
   return winner
     ? `Winner : ${winner}`
     : squares.every(Boolean)
-    ? 'Draw'
-    : `Next player: ${next}`
+    ? "Draw"
+    : `Next player: ${next}`;
 }
 
 function calculateNext(squares: SquareValue[]) {
-  return squares.filter(Boolean).length % 2 == 0 ? 'X' : 'O'
+  return squares.filter(Boolean).length % 2 == 0 ? "X" : "O";
 }

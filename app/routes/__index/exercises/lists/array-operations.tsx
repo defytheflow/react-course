@@ -1,22 +1,22 @@
-import React from 'react'
+import React from "react";
 
 export default function ArrayOperations() {
   const [
     array,
     // prettier-ignore
     { set, push, unshift, pop, shift, splice, fill, map, filter, remove, insert, update, clear },
-  ] = useArray(() => [1, 2, 3, 4, 5, 6])
+  ] = useArray(() => [1, 2, 3, 4, 5, 6]);
 
-  const initialValue = React.useRef(array).current
-  const sectionStyle = { display: 'flex', flexDirection: 'column', gap: 5 } as const
+  const initialValue = React.useRef(array).current;
+  const sectionStyle = { display: "flex", flexDirection: "column", gap: 5 } as const;
 
   return (
     <div>
-      <div style={{ textAlign: 'center', marginBottom: 5 }}>
-        {'[' + array.join(', ') + ']'}
+      <div style={{ textAlign: "center", marginBottom: 5 }}>
+        {"[" + array.join(", ") + "]"}
       </div>
       <button onClick={() => set(initialValue)}>Reset</button>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 250px)', gap: 50 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 250px)", gap: 50 }}>
         <section style={sectionStyle}>
           <h3>Insert</h3>
           <button onClick={() => push(7)}>Add 7 to End</button>
@@ -80,96 +80,96 @@ export default function ArrayOperations() {
         </section>
       </div>
     </div>
-  )
+  );
 }
 
 type NativeArrayFunctions<T> = {
-  push: (...items: T[]) => void
-  unshift: (...items: T[]) => void
-  pop: () => void
-  shift: () => void
+  push: (...items: T[]) => void;
+  unshift: (...items: T[]) => void;
+  pop: () => void;
+  shift: () => void;
   splice: {
-    (start: number, deleteCount?: number): void
-    (start: number, deleteCount: number, ...items: T[]): void
-  }
-  fill: (value: T, start?: number, end?: number) => void
-  map: (callback: (value: T) => T) => void
-  filter: (predicate: (value: T) => boolean) => void
-}
+    (start: number, deleteCount?: number): void;
+    (start: number, deleteCount: number, ...items: T[]): void;
+  };
+  fill: (value: T, start?: number, end?: number) => void;
+  map: (callback: (value: T) => T) => void;
+  filter: (predicate: (value: T) => boolean) => void;
+};
 
 type CustomArrayFunctions<T> = {
-  remove: (index: number) => void
-  insert: (index: number, value: T) => void
-  update: (index: number, value: T) => void
-  clear: () => void
-}
+  remove: (index: number) => void;
+  insert: (index: number, value: T) => void;
+  update: (index: number, value: T) => void;
+  clear: () => void;
+};
 
 type UseArrayFunctions<T> = NativeArrayFunctions<T> &
-  CustomArrayFunctions<T> & { set: React.Dispatch<React.SetStateAction<T[]>> }
+  CustomArrayFunctions<T> & { set: React.Dispatch<React.SetStateAction<T[]>> };
 
 function useArray<T>(initialValue: T[] | (() => T[])): [T[], UseArrayFunctions<T>] {
-  const [array, setArray] = React.useState(initialValue)
+  const [array, setArray] = React.useState(initialValue);
 
   function push(...items: T[]) {
-    setArray(prevArray => [...prevArray, ...items])
+    setArray(prevArray => [...prevArray, ...items]);
     // setArray(prevArray => prevArray.concat(items))
   }
 
   function unshift(...items: T[]) {
-    setArray(prevArray => [...items, ...prevArray])
+    setArray(prevArray => [...items, ...prevArray]);
     // setArray(prevArray => items.concat(prevArray))
   }
 
   function pop() {
-    setArray(prevArray => prevArray.slice(0, -1))
+    setArray(prevArray => prevArray.slice(0, -1));
   }
 
   function shift() {
-    setArray(prevArray => prevArray.slice(1))
+    setArray(prevArray => prevArray.slice(1));
     // setArray(([, ...prevArray]) => prevArray)
   }
 
   function splice(start: number, deleteCount?: number, ...items: T[]) {
     setArray(prevArray => {
       if (deleteCount === undefined) {
-        return prevArray.slice(0, start)
+        return prevArray.slice(0, start);
       }
 
       if (start < 0) {
-        start = prevArray.length + start
+        start = prevArray.length + start;
       }
 
       return [
         ...prevArray.slice(0, start),
         ...items,
         ...prevArray.slice(start + deleteCount),
-      ]
-    })
+      ];
+    });
   }
 
   function fill(value: T, start = 0, end?: number) {
     setArray(prevArray => {
-      let tEnd = end ?? prevArray.length
+      let tEnd = end ?? prevArray.length;
       if (start < 0) {
-        start = prevArray.length + start
+        start = prevArray.length + start;
       }
       if (tEnd < 0) {
-        tEnd = prevArray.length + tEnd
+        tEnd = prevArray.length + tEnd;
       }
-      return prevArray.map((v, i) => (start <= i && i < tEnd ? value : v))
-    })
+      return prevArray.map((v, i) => (start <= i && i < tEnd ? value : v));
+    });
   }
 
   function map(callback: (value: T) => T) {
-    setArray(prevArray => prevArray.map(callback))
+    setArray(prevArray => prevArray.map(callback));
   }
 
   function filter(predicate: (value: T) => boolean) {
-    setArray(prevArray => prevArray.filter(predicate))
+    setArray(prevArray => prevArray.filter(predicate));
   }
 
   function remove(index: number) {
-    setArray(prevArray => prevArray.filter((_, i) => i !== index))
+    setArray(prevArray => prevArray.filter((_, i) => i !== index));
     // setArray(prevArray => [...prevArray.slice(0, index), ...prevArray.slice(index + 1)])
   }
 
@@ -179,12 +179,12 @@ function useArray<T>(initialValue: T[] | (() => T[])): [T[], UseArrayFunctions<T
   }
 
   function update(index: number, value: T) {
-    setArray(prevArray => prevArray.map((v, i) => (i === index ? value : v)))
+    setArray(prevArray => prevArray.map((v, i) => (i === index ? value : v)));
     // setArray(prevArray => [...prevArray.slice(0, index), value, ...prevArray.slice(index + 1)])
   }
 
   function clear() {
-    setArray([])
+    setArray([]);
   }
 
   const stableArrayFunctions = {
@@ -201,23 +201,23 @@ function useArray<T>(initialValue: T[] | (() => T[])): [T[], UseArrayFunctions<T
     insert: React.useCallback(insert, []),
     update: React.useCallback(update, []),
     clear: React.useCallback(clear, []),
-  }
+  };
 
-  return [array, stableArrayFunctions]
+  return [array, stableArrayFunctions];
 }
 
 function ArrayOperationsTemplate() {
-  const array = [1, 2, 3, 4, 5, 6]
-  const todo = () => {}
+  const array = [1, 2, 3, 4, 5, 6];
+  const todo = () => {};
 
   return (
     <div>
-      <div style={{ textAlign: 'center', marginBottom: 5 }}>
-        {'[' + array.join(', ') + ']'}
+      <div style={{ textAlign: "center", marginBottom: 5 }}>
+        {"[" + array.join(", ") + "]"}
       </div>
       <button onClick={todo}>Reset</button>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 250px)', gap: 50 }}>
-        <section style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 250px)", gap: 50 }}>
+        <section style={{ display: "flex", flexDirection: "column", gap: 5 }}>
           <h3>Insert</h3>
           <button onClick={todo}>Add 7 to End</button>
           <button onClick={todo}>Add 7, 8 to End</button>
@@ -230,7 +230,7 @@ function ArrayOperationsTemplate() {
           <button onClick={todo}>Insert 12, 13, 14 after third element</button>
         </section>
 
-        <section style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+        <section style={{ display: "flex", flexDirection: "column", gap: 5 }}>
           <h3>Remove</h3>
           <button onClick={todo}>Remove last element</button>
           <button onClick={todo}>Remove first element</button>
@@ -246,7 +246,7 @@ function ArrayOperationsTemplate() {
           <button onClick={todo}>Remove odd</button>
         </section>
 
-        <section style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+        <section style={{ display: "flex", flexDirection: "column", gap: 5 }}>
           <h3>Update</h3>
           <button onClick={todo}>Change third element to 9</button>
           <button onClick={todo}>
@@ -257,7 +257,7 @@ function ArrayOperationsTemplate() {
           <button onClick={todo}>Set to 1, 2</button>
         </section>
 
-        <section style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+        <section style={{ display: "flex", flexDirection: "column", gap: 5 }}>
           <h3>Fill</h3>
           <button onClick={todo}>Change every value to 0</button>
           <button onClick={todo}>Change every value to 10 from 3 element</button>
@@ -270,5 +270,5 @@ function ArrayOperationsTemplate() {
         </section>
       </div>
     </div>
-  )
+  );
 }

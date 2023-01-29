@@ -1,24 +1,24 @@
 // https://codesandbox.io/s/jvvkoo8pq3
-import React from 'react'
+import React from "react";
 
 export default function Search() {
-  const [data, setData] = React.useState({ hits: [] })
-  const [query, setQuery] = React.useState('react')
+  const [data, setData] = React.useState({ hits: [] });
+  const [query, setQuery] = React.useState("react");
 
   React.useEffect(() => {
-    let ignore = false
+    let ignore = false;
 
     async function fetchData() {
-      const response = await fetch(`https://hn.algolia.com/api/v1/search?query=${query}`)
-      const json = await response.json()
-      if (!ignore) setData(json)
+      const response = await fetch(`https://hn.algolia.com/api/v1/search?query=${query}`);
+      const json = await response.json();
+      if (!ignore) setData(json);
     }
 
-    fetchData()
+    fetchData();
     return () => {
-      ignore = true
-    }
-  }, [query])
+      ignore = true;
+    };
+  }, [query]);
 
   return (
     <div>
@@ -31,5 +31,5 @@ export default function Search() {
         ))}
       </ul>
     </div>
-  )
+  );
 }

@@ -9,7 +9,7 @@ function Ex0() {
       <div>{null}</div>
       <div>{undefined}</div>
     </>
-  )
+  );
 }
 
 function Ex1() {
@@ -21,7 +21,7 @@ function Ex1() {
       <div>{String(null)}</div>
       <div>{String(undefined)}</div>
     </>
-  )
+  );
 }
 
-export { Ex0, Ex1 }
+export { Ex0, Ex1 };

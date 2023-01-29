@@ -1,32 +1,32 @@
-import React from 'react'
+import React from "react";
 
 type ProductType = Readonly<{
-  category: 'Fruits' | 'Vegetables'
-  price: string
-  stocked: boolean
-  name: string
-}>
+  category: "Fruits" | "Vegetables";
+  price: string;
+  stocked: boolean;
+  name: string;
+}>;
 
-type ProductCategory = ProductType['category']
+type ProductCategory = ProductType["category"];
 
 const products: ProductType[] = [
-  { category: 'Fruits', price: '$1', stocked: true, name: 'Apple' },
-  { category: 'Fruits', price: '$1', stocked: true, name: 'Dragon Fruit' },
-  { category: 'Fruits', price: '$2', stocked: false, name: 'Passion Fruit' },
-  { category: 'Vegetables', price: '$2', stocked: true, name: 'Spinach' },
-  { category: 'Vegetables', price: '$4', stocked: false, name: 'Pumpkin' },
-  { category: 'Vegetables', price: '$1', stocked: true, name: 'Peas' },
-]
+  { category: "Fruits", price: "$1", stocked: true, name: "Apple" },
+  { category: "Fruits", price: "$1", stocked: true, name: "Dragon Fruit" },
+  { category: "Fruits", price: "$2", stocked: false, name: "Passion Fruit" },
+  { category: "Vegetables", price: "$2", stocked: true, name: "Spinach" },
+  { category: "Vegetables", price: "$4", stocked: false, name: "Pumpkin" },
+  { category: "Vegetables", price: "$1", stocked: true, name: "Peas" },
+];
 
 export default function ProductTable() {
-  const [filterText, setFilterText] = React.useState('')
-  const [inStockOnly, setInStockOnly] = React.useState(false)
+  const [filterText, setFilterText] = React.useState("");
+  const [inStockOnly, setInStockOnly] = React.useState(false);
 
   const filteredProducts = products.filter(product => {
-    const nameMatches = product.name.toLowerCase().includes(filterText.toLowerCase())
-    const stockedMatches = inStockOnly ? product.stocked : true
-    return nameMatches && stockedMatches
-  })
+    const nameMatches = product.name.toLowerCase().includes(filterText.toLowerCase());
+    const stockedMatches = inStockOnly ? product.stocked : true;
+    return nameMatches && stockedMatches;
+  });
 
   return (
     <div>
@@ -38,7 +38,7 @@ export default function ProductTable() {
       />
       <Table products={filteredProducts} />
     </div>
-  )
+  );
 }
 
 function Search({
@@ -47,43 +47,43 @@ function Search({
   onFilterTextChange,
   onInStockOnlyChange,
 }: {
-  filterText: string
-  inStockOnly: boolean
-  onFilterTextChange: React.Dispatch<React.SetStateAction<typeof filterText>>
-  onInStockOnlyChange: React.Dispatch<React.SetStateAction<typeof inStockOnly>>
+  filterText: string;
+  inStockOnly: boolean;
+  onFilterTextChange: React.Dispatch<React.SetStateAction<typeof filterText>>;
+  onInStockOnlyChange: React.Dispatch<React.SetStateAction<typeof inStockOnly>>;
 }) {
   return (
     <form>
       <input
-        type='text'
-        placeholder='Search...'
-        aria-label='Search...'
+        type="text"
+        placeholder="Search..."
+        aria-label="Search..."
         value={filterText}
         onChange={e => onFilterTextChange(e.target.value)}
       />
-      <label style={{ display: 'block' }}>
+      <label style={{ display: "block" }}>
         <input
-          type='checkbox'
+          type="checkbox"
           checked={inStockOnly}
           onChange={e => onInStockOnlyChange(e.target.checked)}
-        />{' '}
+        />{" "}
         Only show products in stock
       </label>
     </form>
-  )
+  );
 }
 
 function Table({ products }: { products: ProductType[] }) {
-  const rows: JSX.Element[] = []
-  let lastCategory: ProductCategory | null = null
+  const rows: JSX.Element[] = [];
+  let lastCategory: ProductCategory | null = null;
 
   products.forEach(product => {
     if (product.category !== lastCategory) {
-      rows.push(<CategoryRow key={product.category} category={product.category} />)
+      rows.push(<CategoryRow key={product.category} category={product.category} />);
     }
-    rows.push(<ProductRow key={product.name} product={product} />)
-    lastCategory = product.category
-  })
+    rows.push(<ProductRow key={product.name} product={product} />);
+    lastCategory = product.category;
+  });
 
   return (
     <table>
@@ -95,7 +95,7 @@ function Table({ products }: { products: ProductType[] }) {
       </thead>
       <tbody>{rows}</tbody>
     </table>
-  )
+  );
 }
 
 function CategoryRow({ category }: { category: ProductCategory }) {
@@ -103,20 +103,20 @@ function CategoryRow({ category }: { category: ProductCategory }) {
     <tr>
       <th colSpan={2}>{category}</th>
     </tr>
-  )
+  );
 }
 
 function ProductRow({ product }: { product: ProductType }) {
   const name = product.stocked ? (
     product.name
   ) : (
-    <span style={{ color: 'red' }}>{product.name}</span>
-  )
+    <span style={{ color: "red" }}>{product.name}</span>
+  );
 
   return (
     <tr>
       <td>{name}</td>
       <td>{product.price}</td>
     </tr>
-  )
+  );
 }

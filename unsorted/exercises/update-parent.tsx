@@ -1,7 +1,7 @@
-import React from 'react'
+import React from "react";
 
 export default function Parent() {
-  const [value, setValue] = React.useState('I need to be update from my child')
+  const [value, setValue] = React.useState("I need to be update from my child");
 
   return (
     <>
@@ -12,16 +12,16 @@ export default function Parent() {
         <Child setValue={setValue} />
       </div>
     </>
-  )
+  );
 }
 
 function Child({ setValue }: { setValue: React.Dispatch<React.SetStateAction<string>> }) {
   return (
     <div>
       <div>Child</div>
-      <button onClick={() => setValue('Updated from the child')}>
+      <button onClick={() => setValue("Updated from the child")}>
         Change Parent Value
       </button>
     </div>
-  )
+  );
 }

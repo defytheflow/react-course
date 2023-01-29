@@ -1,11 +1,11 @@
-import React from 'react'
+import React from "react";
 
 export default function NumberDescriberApp() {
-  const [number, setNumber] = React.useState(4)
+  const [number, setNumber] = React.useState(4);
 
   function setRandomNumber() {
-    const newNumber = Math.round(Math.random() * 101)
-    setNumber(newNumber)
+    const newNumber = Math.round(Math.random() * 101);
+    setNumber(newNumber);
   }
 
   return (
@@ -13,22 +13,22 @@ export default function NumberDescriberApp() {
       <NumberDescriber number={number} />
       <button onClick={setRandomNumber}>New random number</button>
     </div>
-  )
+  );
 }
 
 // https://reactjs.org/docs/jsx-in-depth.html
 function NumberDescriber({ number }: { number: number }) {
-  let description
+  let description;
 
   if (number % 2 === 0) {
-    description = <b>even</b>
+    description = <b>even</b>;
   } else {
-    description = <i>odd</i>
+    description = <i>odd</i>;
   }
 
   return (
     <div>
       {number} is an {description} number
     </div>
-  )
+  );
 }

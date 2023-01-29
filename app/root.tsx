@@ -1,4 +1,4 @@
-import type { LinksFunction, MetaFunction } from '@remix-run/node'
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -6,24 +6,25 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-} from '@remix-run/react'
-import styles from './app.css'
+} from "@remix-run/react";
+
+import tailwindStyles from "./styles/tailwind.css";
 
 export const meta: MetaFunction = () => {
   return {
-    charset: 'utf-8',
-    title: 'React Course',
-    viewport: 'width=device-width,initial-scale=1',
-  }
-}
+    charset: "utf-8",
+    title: "React Course",
+    viewport: "width=device-width,initial-scale=1",
+  };
+};
 
 export const links: LinksFunction = () => {
-  return [{ rel: 'stylesheet', href: styles }]
-}
+  return [{ rel: "stylesheet", href: tailwindStyles }];
+};
 
 export default function App() {
   return (
-    <html lang='en'>
+    <html lang="en">
       <head>
         <Meta />
         <Links />
@@ -35,5 +36,5 @@ export default function App() {
         <LiveReload />
       </body>
     </html>
-  )
+  );
 }
