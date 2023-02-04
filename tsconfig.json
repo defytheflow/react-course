@@ -4,7 +4,7 @@
   "compilerOptions": {
     // Fixes react-i18next and i18next-http-backend types conflict
     "skipLibCheck": true,
-    "lib": ["DOM", "DOM.Iterable", "ES2019"],
+    "lib": ["DOM", "DOM.Iterable", "ES2019", "ES2021"],
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",

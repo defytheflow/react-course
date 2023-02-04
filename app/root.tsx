@@ -1,4 +1,4 @@
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, V2_MetaFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -10,12 +10,8 @@ import {
 
 import tailwindStyles from "./styles/tailwind.css";
 
-export const meta: MetaFunction = () => {
-  return {
-    charset: "utf-8",
-    title: "React Course",
-    viewport: "width=device-width,initial-scale=1",
-  };
+export const meta: V2_MetaFunction = () => {
+  return [{ title: "React Course" }];
 };
 
 export const links: LinksFunction = () => {
@@ -27,6 +23,8 @@ export default function App() {
     <html lang="en">
       <head>
         <Meta />
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Links />
       </head>
       <body>

@@ -1,19 +1,20 @@
 import React from "react";
 
-// https://reactjs.org/docs/state-and-lifecycle.html
 export default function Clock() {
   const date = useDate();
-  return <h1>{date.toLocaleTimeString()}</h1>;
+  return (
+    <div className="font-semibold" role="timer" aria-live="polite">
+      {date.toLocaleTimeString()}
+    </div>
+  );
 }
 
 function useDate() {
   const [date, setDate] = React.useState(() => new Date());
 
   React.useEffect(() => {
-    const interval = setInterval(() => {
-      setDate(new Date());
-    }, 1000);
-    return () => clearInterval(interval);
+    const id = setInterval(() => setDate(new Date()), 3000);
+    return () => clearInterval(id);
   }, []);
 
   return date;

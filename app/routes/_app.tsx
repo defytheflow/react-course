@@ -1,24 +1,14 @@
-import type { LoaderArgs, MetaFunction } from "@remix-run/node";
+import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import clsx from "clsx";
 import fs from "fs";
 import React from "react";
+import invariant from "tiny-invariant";
 
 import { capitalize } from "~/utils/misc";
 import useToggle from "~/utils/use-toggle";
 
-export const meta: MetaFunction = ({ location }) => {
-  const { length, [length - 1]: lastPathnameSegment } = location.pathname.split("/");
-  const name = makeTitle(lastPathnameSegment ?? "");
-  return { title: `React Course - ${name}` };
-};
-
-type LinkType = Readonly<{ to: string; title: string }>;
-
-type LoaderData = {
-  initialAsideOpen: "true" | "false";
-  linksData: Record<string, LinkType[]>;
-};
+type LinkType = { to: string; title: string };
 
 function getFilesRecursive(dir: string, _files: string[] = []) {
   const files = fs.readdirSync(dir);
@@ -60,21 +50,24 @@ function parseCookies(request: Request) {
   return cookies;
 }
 
+// TODO: use remix createCookie() api for this 🤦
 export function loader({ request }: LoaderArgs) {
   const cookies = parseCookies(request);
 
-  const pathnames = getFilesRecursive("./app/routes/__index/exercises")
-    .map(s => s.replace(/^.*__index/, ""))
-    .map(s => s.replace(/.tsx/, ""));
+  const pathnames = getFilesRecursive("./app/routes")
+    .map(s => s.replace(/^.*_app\./, "").replace(/.tsx$/, ""))
+    .filter(s => s.includes("exercises"));
 
-  const map: LoaderData["linksData"] = {};
+  const map: Record<string, LinkType[]> = {};
 
   for (const pathname of pathnames) {
-    const parts = pathname.split("/");
-    const category = makeTitle(parts[2]);
-    const name = makeTitle(parts[3]);
-    map[category] = map[category] ?? [];
-    map[category].push({ to: pathname, title: name });
+    const [, categoryPart, namePart] = pathname.split(".");
+    invariant(typeof categoryPart === "string", "categoryPart should be a string");
+    invariant(typeof namePart === "string", "namePart should be a string");
+    const category = makeTitle(categoryPart);
+    const name = makeTitle(namePart);
+    const categoryArr = (map[category] = map[category] ?? []);
+    categoryArr.push({ to: pathname.replaceAll(".", "/"), title: name });
   }
 
   return {
@@ -82,6 +75,12 @@ export function loader({ request }: LoaderArgs) {
     linksData: map,
   };
 }
+
+export const meta: V2_MetaFunction = ({ location }) => {
+  const { length, [length - 1]: lastPathnameSegment } = location.pathname.split("/");
+  const name = makeTitle(lastPathnameSegment ?? "");
+  return [{ title: `${name} | React Course` }];
+};
 
 export default function Index() {
   const { initialAsideOpen, linksData } = useLoaderData<typeof loader>();
@@ -92,14 +91,15 @@ export default function Index() {
   const [isAsideOpen, toggleAside] = useToggle(initialAsideOpen !== "false");
 
   React.useEffect(() => {
-    document.cookie = `${ASIDE_COOKIE}=${isAsideOpen}; SameSite=Lax; path=/`;
+    document.cookie = `${ASIDE_COOKIE}=${String(isAsideOpen)}; SameSite=Lax; path=/`;
   }, [isAsideOpen]);
 
   const navId = "aside-navigation";
 
   return (
     <div className="flex h-screen flex-col">
-      <header className="relative h-10 bg-[#639] bg-[#82AAFF] py-4 text-white">
+      {/* bg-[#639] */}
+      <header className="relative h-10 bg-[#82AAFF] py-4 text-white">
         <h1 className="m-0 text-center">{link ? link.title : "React Course ★"}</h1>
         <button
           aria-expanded={isAsideOpen}
@@ -108,13 +108,13 @@ export default function Index() {
           className="absolute top-1/2 ml-6"
           style={{ transform: "translateY(-50%)" }}
         >
-          {`${isAsideOpen ? "Hide" : "Show"} menu`}
+          {isAsideOpen ? "Hide" : "Show"} menu
         </button>
       </header>
       <div
         className={clsx("grid", isAsideOpen ? "grid-cols-layout" : "grid-cols-1", "grow")}
       >
-        {isAsideOpen && (
+        {isAsideOpen ? (
           <nav id={navId} className="max-w-xs bg-[#ececec]">
             <ul className="m-0 mt-4 flex list-none flex-col gap-3 p-0 px-6">
               {Object.entries(linksData).map(([title, links]) => (
@@ -122,7 +122,7 @@ export default function Index() {
               ))}
             </ul>
           </nav>
-        )}
+        ) : null}
         <main className="flex grow justify-center px-6 pt-6">
           <Outlet />
         </main>
